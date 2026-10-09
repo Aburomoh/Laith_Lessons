@@ -2,6 +2,8 @@
 
 A quiet, offline English practice tool for an eight-year-old, designed for live tutoring over Microsoft Teams screen sharing.
 
+**Website:** [Laith’s English Studio](https://aburomoh.github.io/Laith_Lessons/) — planned GitHub Pages address; publication is pending, so this link is not yet live.
+
 ## Start
 
 Download the repository and open `learning-tool/index.html` in your browser. On Windows, double-click `Open English Studio.cmd`.
