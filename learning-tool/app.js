@@ -1,6 +1,6 @@
-                                                                                                                     
-                                                                                                                                                                                                                                                  
-                                                                            
+
+
+
 const topics          = [
   {id:'words',title:'Words & meanings',icon:'Aa',subtitle:'Family words, actions and describing words'},
   {id:'world',title:'Around the world',icon:'◎',subtitle:'Continents, countries and worksheet clues'},
@@ -206,7 +206,7 @@ oral('writing','writing','Tell your friend about a food from your country.','Exa
 oral('writing','writing','Tell a friend three things about your country.','Example: I live in Jordan.\nMy country is beautiful.\nA food from my country is mansaf.','Use your own true facts. Check capitals, spaces and full stops.','Think: where I live · what my country is like · a food.');
 oral('writing','writing','Say three sentences about your country without the sentence starters.','Tutor checks: three simple facts, clear sentences, capital letters and full stops.','Accept any three suitable facts. Ask Laith which letters he would capitalise.','You can talk about your country, a city or a food.',true,{pose:'proud'});
 
-                                                                                                                            
+
 const $ =                                    (id       ) => document.getElementById(id)     ;
 const storageKey='laith-english-studio-v1';
 const byId = new Map(questions.map(q=>[q.id,q]));
