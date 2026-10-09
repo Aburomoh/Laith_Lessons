@@ -1,0 +1,7 @@
+node_modules/
+learning-tool/preview-*.png
+*.jpeg
+STUDY_MAP.md
+tutor poses/*.md
+tutor poses/index.html
+*.log
