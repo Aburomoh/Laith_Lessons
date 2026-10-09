@@ -241,7 +241,8 @@ function conceptFor(q         )         {
     const lower=word.toLowerCase();const ai=lower.indexOf('ai');const ay=lower.indexOf('ay');
     const parts=ai>=0?[word.slice(0,ai),'ai',word.slice(ai+2)]:ay>=0?[word.slice(0,ay),'ay',word.slice(ay+2)]:[word.slice(0,lower.indexOf('a')),'a',word.slice(lower.indexOf('a')+1,-1),'e'];
     const tokens=parts.filter(Boolean);const focus=tokens.flatMap((t,i)=>['a','e','ai','ay'].includes(t)?[i]:[]);
-    return concept('Long A',tokens,tokens,focus,`${word}: hear the letter name A. ${ai>=0?'ai':ay>=0?'ay':'a_e'} makes the long A sound.`,'fade');
+    const pattern=ai>=0?'ai':ay>=0?'ay':'a_e';
+    return {...concept('Long A',tokens,tokens,focus,`${word}: hear the letter name A. ${pattern} makes the long A sound.`,'fade'),phonics:pattern};
   }
   if(q.topic==='capitals'){
     const correct=q.answer;const before=q.choices?.find(c=>c!==correct)||q.prompt.split('\n').at(-1) ;
@@ -337,8 +338,9 @@ function stopConcept(){if(conceptTimer!==undefined)clearTimeout(conceptTimer);co
 function animateConcept(){
   stopConcept();const c=conceptFor(current());const row=$('concept-words');const caption=$('concept-caption');
   $('concept-title').textContent=c.title;caption.textContent=c.caption;
+  row.classList.toggle('phonics',!!c.phonics);
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const fill=(tokens         ,final        )=>{row.replaceChildren();tokens.forEach((word,i)=>{const el=document.createElement('span');el.textContent=word;el.className='concept-word';if(final&&c.focus.includes(i))el.classList.add('concept-focus');row.append(el)})};
+  const fill=(tokens         ,final        )=>{row.replaceChildren();tokens.forEach((word,i)=>{const el=document.createElement('span');el.textContent=word;el.className='concept-word';if(final&&c.focus.includes(i))el.classList.add('concept-focus');if(final&&c.phonics==='a_e'&&i>=c.focus[0]&&i<=c.focus.at(-1) )el.classList.add('phonics-bridge');row.append(el)})};
   if(reduced){fill(c.after,true);return}
   fill(c.before,false);
   conceptTimer=setTimeout(()=>{

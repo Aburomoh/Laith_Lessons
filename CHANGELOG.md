@@ -2,6 +2,7 @@
 
 ## Unreleased — Concept explanations and CI
 
+- Keep phonics words joined; highlight long-A letters with one colour and bold weight, and connect split a_e with a simple underline.
 - Add an optional ⓘ concept window with gentle word animation, replay and reduced-motion support.
 - Explain negation, question order, contractions, possession, phonics, capitals and related source concepts.
 - Add strict TypeScript checking, locked development dependencies, browser checks and GitHub Actions CI.

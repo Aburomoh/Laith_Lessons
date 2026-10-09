@@ -20,6 +20,8 @@
 
 **Pictures:** Generated images are permitted by the user when needed, but none are currently needed for these word transformations. Live text stays sharp during screen sharing, is easy to correct, and avoids spelling errors inside raster artwork. Future pictures should support a specific question, preserve the simple difficulty level and be recorded with their source/generation details.
 
+**Phonics typography:** Keep letters joined as a real word, rather than separate padded tiles. Use the same dark green and bold weight for a_e, ai and ay. A single underline connects the a and silent e across their consonant. Surrounding letters stay plain; avoid italics, colour legends and multiple competing emphasis styles. Typography appears only in the optional concept window so a spelling question is not answered by its own styling.
+
 **Accessibility:** Reduced-motion preference shows the final state immediately. The final result remains readable as real text, with an explanatory caption; focus and Escape use native dialog behaviour.
 
 **Difficulty encountered:** The GitHub destination was initially empty, so there was no default-branch baseline for a conventional feature PR. An earlier push was blocked by automatic approval review because the repository is public and the content derives from private worksheet photos. Original photos remain excluded. Publishing must respect the approval result; do not bypass it through alternate tools. GitHub CLI network/authentication checks also require the allowed network execution context.

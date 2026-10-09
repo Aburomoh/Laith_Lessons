@@ -1,4 +1,4 @@
-type Concept = { title:string; before:string[]; after:string[]; focus:number[]; caption:string; movement:'fall'|'move'|'fade' };
+type Concept = { title:string; before:string[]; after:string[]; focus:number[]; caption:string; movement:'fall'|'move'|'fade'; phonics?:'a_e'|'ai'|'ay' };
 const splitWords=(text:string)=>text.trim().split(/\s+/);
 function conceptFor(q:Question):Concept {
   const concept=(title:string,before:string[],after:string[],focus:number[],caption:string,movement:Concept['movement']='move'):Concept=>({title,before,after,focus,caption,movement});
@@ -33,7 +33,8 @@ function conceptFor(q:Question):Concept {
     const lower=word.toLowerCase();const ai=lower.indexOf('ai');const ay=lower.indexOf('ay');
     const parts=ai>=0?[word.slice(0,ai),'ai',word.slice(ai+2)]:ay>=0?[word.slice(0,ay),'ay',word.slice(ay+2)]:[word.slice(0,lower.indexOf('a')),'a',word.slice(lower.indexOf('a')+1,-1),'e'];
     const tokens=parts.filter(Boolean);const focus=tokens.flatMap((t,i)=>['a','e','ai','ay'].includes(t)?[i]:[]);
-    return concept('Long A',tokens,tokens,focus,`${word}: hear the letter name A. ${ai>=0?'ai':ay>=0?'ay':'a_e'} makes the long A sound.`,'fade');
+    const pattern=ai>=0?'ai':ay>=0?'ay':'a_e';
+    return {...concept('Long A',tokens,tokens,focus,`${word}: hear the letter name A. ${pattern} makes the long A sound.`,'fade'),phonics:pattern};
   }
   if(q.topic==='capitals'){
     const correct=q.answer;const before=q.choices?.find(c=>c!==correct)||q.prompt.split('\n').at(-1)!;
