@@ -45,3 +45,11 @@ Support survives navigation and reloads. Older incorrect/revealed records migrat
 Mixed rounds default to 10, with 5 and 15 available. Tutor-only recaps record overlapping lesson events and persist until Start new lesson recap. Starting a recap never bypasses the retrieval delay. Tutor coaching preserves flexible spoken marking, invites explanations of choices, and asks the child to read phonics words aloud before identifying spelling. No extra learner-screen labels, controls or difficulty were added.
 
 Difficulty: progress previously had one last-result field, so an immediate correction erased a miss. A separate pure transition model now retains support and review eligibility alongside the legacy last-result field. Local storage can be unavailable and records are not synchronised between devices; unrecorded tutor help cannot be inferred. Tests cover state transitions and browser reload behaviour as well as the existing exhaustive layouts.
+
+## 2026-10-10 — Mobile access and GitHub Pages
+
+The user requests public GitHub hosting and phone/tablet access. Preserve the same one-question flow on small screens; enlarge touch targets, account for safe areas, wrap tutor controls, and allow vertical scrolling instead of shrinking all text to fit. Use WebKit device emulation for iPhone/iPad and Chromium for Android. Physical-device behaviour remains a separate verification limit.
+
+Pages deploys only the explicitly packaged runtime after both desktop and mobile checks pass on main. Feature branches and PRs validate without deploying. The root redirect uses a relative link so the app works below the repository subpath and offline. No original worksheet images are published. The push was again rejected by automatic approval review, which requires explicit consent to expose the adapted exam content publicly despite the hosting request. Complete and test locally before requesting that consent; do not bypass the rejection.
+
+Validation: strict TypeScript/content checks and the desktop suite passed. The packaged site passed all 152 question/concept layouts on iPhone SE and iPad WebKit emulation, plus nine representative topics on iPhone landscape and Android. Touch controls, dialogs, large text and project-relative assets passed. iPhone and iPad screenshots were visually reviewed. No physical-device or remote CI pass is claimed.

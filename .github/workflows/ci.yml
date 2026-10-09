@@ -1,12 +1,14 @@
-name: Lesson tool checks
+name: Lesson checks and Pages
 on:
   push:
     branches: [main, 'feature/**']
   pull_request:
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
   validate:
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -22,8 +24,15 @@ jobs:
       - run: npm run check
       - name: Verify generated browser script is committed
         run: git diff --exit-code -- app.js
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps chromium webkit
       - run: npm run test:browser
+      - run: npm run build:pages
+      - run: npm run test:mobile
+      - name: Upload tested website
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: pages-dist
       - name: Keep browser screenshots for review
         if: always()
         uses: actions/upload-artifact@v4
@@ -31,3 +40,21 @@ jobs:
           name: lesson-screen-previews
           path: learning-tool/preview-*.png
           if-no-files-found: ignore
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - name: Deploy tested website
+        id: deployment
+        uses: actions/deploy-pages@v4

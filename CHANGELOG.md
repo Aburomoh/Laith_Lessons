@@ -2,6 +2,10 @@
 
 ## Unreleased — Concept explanations, delayed retrieval and CI
 
+- Prepare a runtime-only GitHub Pages package and deployment gated by CI.
+- Adapt phone/tablet layouts with safe-area spacing, touch targets and scrollable dialogs.
+- Add packaged-site tests for iPhone/iPad WebKit and Android Chromium emulation.
+
 - Retain missed and supported questions for an unaided later review after a 24-hour practice gap.
 - Record hints, concepts and reveals separately from correct responses; preserve support across reloads.
 - Add short mixed rounds, tutor-only lesson recap, and spoken/phonics coaching.

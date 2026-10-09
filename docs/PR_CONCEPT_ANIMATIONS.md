@@ -1,8 +1,10 @@
-# Add concept explanations and delayed retrieval with a repeatable validation workflow
+# Add concept teaching, delayed retrieval and mobile-ready GitHub Pages
 
 The tutor can now press ⓘ beside a question to show a gentle visual explanation, then replay it or close it and return to the same question. The teaching screen keeps its minimal layout. For example, He is at home becomes He is **not** at home, with not falling after is; question formation moves the be verb before the subject.
 
 Immediate correction now stays in the revisit queue. An unaided response after a 24-hour practice gap records delayed recall; hints, concepts and reveals record support. Mixed rounds offer 5/10/15 questions and an optional tutor recap, keeping the learner screen quiet.
+
+The same question flow now supports phone/tablet layouts with touch targets and safe-area spacing. GitHub Pages packages runtime files only and deploys from main after desktop and mobile checks pass.
 
 ## Teaching and implementation
 

@@ -11,7 +11,9 @@
     "typecheck": "tsc --project tsconfig.json",
     "test": "node tests.mjs",
     "test:browser": "node tests.mjs --browser",
-    "check": "npm run typecheck && npm run build && npm test"
+    "check": "npm run typecheck && npm run build && npm test",
+    "test:mobile": "node mobile-tests.mjs",
+    "build:pages": "node package-pages.mjs"
   },
   "devDependencies": {
     "playwright": "1.58.2",

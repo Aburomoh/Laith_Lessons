@@ -10,6 +10,10 @@ The teaching screen shows one question, answer choices, a tutor image and three 
 
 Laith answers aloud. The tutor operates the screen. Responses stay hidden until a choice is selected or Answer is pressed. No account, internet connection or installation is required to teach.
 
+## Phones and tablets
+
+The interface adapts to iPhone, iPad and Android screen sizes, with touch controls and scrollable dialogs. For access from another device, use the GitHub Pages link once publication is enabled; a computer’s 127.0.0.1 preview address is local to that computer. Progress remains separate in each browser/device.
+
 ## Included
 
 - 152 questions across nine topics, grounded in the 13 selected exam pages.

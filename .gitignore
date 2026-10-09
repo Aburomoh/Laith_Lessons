@@ -5,3 +5,5 @@ STUDY_MAP.md
 tutor poses/*.md
 tutor poses/index.html
 *.log
+
+pages-dist/
