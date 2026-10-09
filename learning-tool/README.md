@@ -14,6 +14,8 @@ Open Lesson recap in tutor tools, or finish a round, to see correct responses, s
 
 Open ⋯ → Tutor expression to select any of the 18 available expressions. Automatic reactions include raised eyebrows, serious, unsure, crossed arms, concerned, empathetic, reassuring, aha, proud, excited, surprised, caution and amused. Frustration and disappointment can be selected for appropriate teaching moments; they refer to the task. Character captions are hidden from the teaching screen.
 
+All available expressions are approved for Laith, who finds even the exaggerated stern reactions funny. Use the full range playfully when the moment fits—for example, mock frustration with a tricky sentence or skepticism before checking an answer. Let the live tutor judge the timing and Laith's response. The previously discarded image remains excluded.
+
 Keyboard: T opens tutor tools; 1–4 select choices; H gives a hint; Left/Right change question; Space reveals when focus is outside a button; Esc closes a panel. When a button has keyboard focus, Space activates that button normally.
 
 Progress and the current question are saved locally when browser storage is available. Local-file storage behaviour varies by browser; use the local server below for a stable browser origin. Progress stays in your browser. Storage belongs to the browser/device, so it is not synchronised through Teams.

@@ -1,5 +1,9 @@
 # Decisions and difficulties
 
+## 2026-10-10 — Full expression range approved
+
+The parent confirms that Laith interprets the tutor's exaggerated expressions as funny, including expressions that could otherwise appear judgmental. Keep all 18 approved poses available: do not remove, soften or prohibit frustration, disappointment, skepticism or firm crossed arms on that assumption. Use them as playful reactions to a tricky problem, a surprising choice or a deliberate tutor joke, with timing guided by the tutor and Laith's response. Avoid automatically escalating sternness after repeated mistakes; the tutor can choose the full range for appropriate moments. The previously discarded image remains excluded. This clarification preserves the existing pose catalogue and tutor control; no interface change is needed.
+
 ## 2026-10-10 — Quiet teaching screen
 
 **Need:** The learner is eight and easily distracted, and sees the app through Teams screen sharing.
