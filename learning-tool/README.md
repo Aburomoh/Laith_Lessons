@@ -26,14 +26,18 @@ The vocabulary continuation's page number is not visible, so the interface does 
 
 The ambiguous Friday sound question is explicitly reframed as an **ay spelling** question. Its explanation in Tutor tools explains that tail, plane and holiday all have long A. No original listening recordings are included. Open writing uses model answers, with clear instructions to accept other suitable answers and personalise facts rather than assume Laith's country.
 
+The **ⓘ** beside the question opens a short concept animation. Replay repeats it; Escape or × closes it. Some concepts use clearly labelled teaching examples. Opening it does not change the score or advance the question. With reduced motion enabled on the device, the final state appears immediately. No generated pictures have been needed so far.
+
 ## Source and development
 
 - `questions.ts`: typed question bank, source mappings and reading passages.
 - `app.ts`: typed interface, feedback, navigation and local progress.
+- `concepts.ts`: pure concept descriptions and grammar transformations.
+- `concept-ui.ts`: optional animation window, replay and cleanup.
 - `styles.css`: screen-share layout and effects, including reduced-motion support.
 - `app.js`: generated browser script, included so the tool opens directly.
 - `build.mjs`: uses Node 24's built-in TypeScript stripping; no third-party build dependencies. This builds executable JavaScript; it is not a TypeScript semantic type checker.
 
-After changing TypeScript, run `npm run build`. Run `npm test` for content and source checks. `node tests.mjs --browser` additionally runs browser interaction and layout checks when Playwright is available; set PLAYWRIGHT_PATH to its absolute index.mjs path on another machine.
+For development, use Node 24 and run `npm ci`, then `npm run check`. Run `npx playwright install chromium` once, then `npm run test:browser` for interactions, concepts and layout. The lockfile pins TypeScript and Playwright; teaching itself requires neither. CI runs the checks on pushes and pull requests. See ../docs/DEVELOPMENT.md and ../docs/DECISIONS.md for the review process, motives and limitations.
 
 Optional local server: run `npm start` in this folder and open http://127.0.0.1:4173. Stop with Ctrl+C. The server listens only on this computer.

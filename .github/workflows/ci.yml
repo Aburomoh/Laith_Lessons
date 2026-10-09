@@ -1,0 +1,33 @@
+name: Lesson tool checks
+on:
+  push:
+    branches: [main, 'feature/**']
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: learning-tool
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: learning-tool/package-lock.json
+      - run: npm ci
+      - run: npm run check
+      - name: Verify generated browser script is committed
+        run: git diff --exit-code -- app.js
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
+      - name: Keep browser screenshots for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lesson-screen-previews
+          path: learning-tool/preview-*.png
+          if-no-files-found: ignore

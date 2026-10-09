@@ -3,7 +3,8 @@ import { stripTypeScriptTypes } from 'node:module';
 import { runInNewContext } from 'node:vm';
 import assert from 'node:assert/strict';
 import { resolve } from 'node:path';
-const data=runInNewContext(stripTypeScriptTypes(readFileSync(new URL('questions.ts',import.meta.url),'utf8'))+'\n({questions,topics,sources,poses:[]})');
+import { pathToFileURL } from 'node:url';
+const data=runInNewContext(['questions.ts','concepts.ts'].map(name=>stripTypeScriptTypes(readFileSync(new URL(name,import.meta.url),'utf8'))).join('\n')+'\n({questions,topics,sources,conceptFor})');
 const {questions,topics,sources}=data;
 const appSource=stripTypeScriptTypes(readFileSync(new URL('app.ts',import.meta.url),'utf8'));
 const poseDeclaration=appSource.match(/const poses[^=]*=([^;]+);/s)[0];
@@ -13,10 +14,12 @@ assert.equal(new Set(questions.map(q=>q.id)).size,questions.length,'Unique quest
 assert.equal(Object.keys(sources).length,13,'All 13 selected source photos mapped');
 for(const [source,photo] of Object.values(sources)){assert(questions.some(q=>q.source===source),`Missing training: ${source}`);assert(questions.some(q=>q.photo===`WhatsApp Image 2026-10-10 at ${photo}.jpeg`));}
 for(const q of questions){assert(topics.some(t=>t.id===q.topic));for(const key of ['prompt','answer','explanation','hint','source','photo'])assert(q[key]?.length,`${q.id}: ${key}`);if(q.choices){assert(q.choices.length>=2&&q.choices.length<=4);assert.equal(new Set(q.choices).size,q.choices.length);assert(q.choices.includes(q.answer),`${q.id}: answer missing`)}}
+for(const q of questions){const c=data.conceptFor(q);assert(c.title&&c.caption,`Concept text: ${q.id}`);assert(c.before.length&&c.after.length);assert([...c.before,...c.after].every(t=>typeof t==='string'&&t.length));assert(c.focus.every(i=>i>=0&&i<c.after.length));}
+for(const q of questions.filter(q=>q.topic==='be'&&/negative:/i.test(q.prompt))){const c=data.conceptFor(q);assert.equal(c.after[2],'not','Not must follow the be verb');assert(['am','is','are'].includes(c.after[1]));assert.equal(c.movement,'fall');}
+const inverted=data.conceptFor(questions.find(q=>q.prompt==='Make a question: He is at home.'));assert.equal(inverted.after.join(' '),'Is he at home?');
 console.log(`Content checks passed: ${questions.length} questions, ${topics.length} topics, 13 source photos.`);
 if(!process.argv.includes('--browser'))process.exit(0);
-const packagePath=process.env.PLAYWRIGHT_PATH||'C:/Users/mnabu/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs';
-const {chromium}=await import('file:///'+packagePath.replaceAll('\\','/'));
+const {chromium}=await import(process.env.PLAYWRIGHT_PATH?pathToFileURL(process.env.PLAYWRIGHT_PATH).href:'playwright');
 const browser=await chromium.launch({headless:true});
 const page=await browser.newPage({viewport:{width:1280,height:720}});
 const errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -25,6 +28,10 @@ const openTopics=async()=>{await openTools();await page.locator('#topics').click
 await page.goto(new URL('index.html',import.meta.url).href);
 await page.evaluate(()=>localStorage.clear());await page.reload();
 await page.locator('#tutor').evaluate(img=>img.decode());
+const initialProgress=await page.evaluate(()=>localStorage.getItem('laith-english-studio-v1'));
+await page.locator('#concept-info').click();assert(await page.locator('#concept-dialog').isVisible());await page.locator('#concept-replay').click();await page.keyboard.press('Escape');
+assert.equal(await page.evaluate(()=>localStorage.getItem('laith-english-studio-v1')),initialProgress,'Concepts do not affect progress');
+assert(await page.locator('#concept-info').evaluate(el=>el===document.activeElement),'Dialog returns focus to the info button');
 await page.locator('#choices button').nth(1).click();assert.match(await page.locator('#feedback').innerText(),/Try again/);
 await openTopics();assert.equal(await page.locator('#retry-count').innerText(),'1');await page.locator('#topic-dialog [data-close]').click();
 await page.locator('#choices button').nth(0).click();assert.match(await page.locator('#feedback').innerText(),/Correct!/);
@@ -52,6 +59,14 @@ assert.equal(overflow.length,0,'Default teaching screens fit at 1280×720, inclu
 await openTopics();await page.locator('#topic-grid button').filter({hasText:'Am, is & are'}).click();
 await page.screenshot({path:new URL('preview-grammar.png',import.meta.url).pathname.replace(/^\/([A-Za-z]:)/,'$1'),fullPage:true});
 await page.locator('#choices button').nth(1).click();await page.screenshot({path:resolve('preview-feedback.png'),fullPage:true});
+// Negation example: pause then animate NOT after IS. Test replay, Escape, and reduced motion.
+for(let i=0;i<7;i++)await page.locator('#next').click();
+await page.locator('#concept-info').click();await page.waitForFunction(()=>document.querySelector('#concept-words').textContent.includes('not'));
+assert.equal(await page.locator('#concept-words').innerText(),'He\nis\nnot\nat\nhome.');
+await page.locator('#concept-words').evaluate(async el=>{await Promise.all(Array.from(el.children).flatMap(child=>child.getAnimations().map(a=>a.finished)))});
+await page.screenshot({path:resolve('preview-concept.png'),fullPage:true});
+await page.locator('#concept-replay').click();assert.equal(await page.locator('#concept-words').innerText(),'He\nis\nat\nhome.');await page.keyboard.press('Escape');
+await page.emulateMedia({reducedMotion:'reduce'});await page.locator('#concept-info').click();assert.equal(await page.locator('#concept-words').innerText(),'He\nis\nnot\nat\nhome.');assert.equal(await page.locator('#concept-words').evaluate(el=>el.getAnimations({subtree:true}).length),0);await page.keyboard.press('Escape');await page.emulateMedia({reducedMotion:'no-preference'});
 await page.setViewportSize({width:1440,height:900});await openTopics();await page.locator('#topic-grid button').filter({hasText:'The giraffe family'}).click();await page.locator('#reveal').click();await page.screenshot({path:resolve('preview-reading.png'),fullPage:true});
 await openTools();await page.locator('#full-passage').click();assert.match(await page.locator('#passage-body').innerText(),/Fennessy/);await page.locator('#passage-dialog [data-close]').click();
 await openTools();await page.locator('#source-photo').click();if(existsSync(new URL('../'+questions.find(q=>q.topic==='reading').photo,import.meta.url))){await page.locator('#photo').evaluate(img=>img.decode())}else{await page.locator('#photo').waitFor({state:'hidden'});assert.match(await page.locator('#photo-note').innerText(),/not included/)}await page.locator('#photo-dialog [data-close]').click();
