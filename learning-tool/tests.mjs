@@ -21,6 +21,15 @@ for(const art of Object.values(data.illustrations))assert(existsSync(new URL(art
 for(const q of questions){const key=data.illustrationFor(q);if(key)assert(data.illustrations[key]);}
 assert.equal(data.conceptFor(questions.find(q=>q.prompt.includes('guitar picture'))).after.at(-1),'Spain');
 assert.equal(data.conceptFor(questions.find(q=>q.prompt==='Read these sentences aloud.')).title,'Read with pauses');
+const {recordPractice,reviewDelay}=runInNewContext(stripTypeScriptTypes(readFileSync(new URL('progress.ts',import.meta.url),'utf8'))+'\n({recordPractice,reviewDelay})');
+let recall=recordPractice(undefined,'retry',1000);
+recall=recordPractice(recall,'correct',2000);assert(recall.pending);assert.equal(recall.outcome,'supported');
+recall=recordPractice(recall,'correct',3000);assert(recall.pending,'Repeated correction stays pending');
+recall=recordPractice(recall,'correct',3000+reviewDelay);assert(!recall.pending);assert.equal(recall.outcome,'remembered');
+for(const aid of ['hint','concept','revealed']){let r=recordPractice(undefined,aid,1000);r=recordPractice(r,'correct',2000);assert(r.pending);assert.equal(r.outcome,'supported');r=recordPractice(r,'hint',2000+reviewDelay);r=recordPractice(r,'correct',2001+reviewDelay);assert(r.pending,'Help at delayed review keeps item pending');}
+assert.equal(recordPractice(undefined,'correct',1000).outcome,'unaided');
+assert(recordPractice(recall,'retry',3001+reviewDelay).pending,'A later miss reopens review');
+console.log('Delayed retrieval checks passed: correction, help, delay and reopened review.');
 console.log(`Content checks passed: ${questions.length} questions, ${topics.length} topics, 13 source photos.`);
 if(!process.argv.includes('--browser'))process.exit(0);
 const {chromium}=await import(process.env.PLAYWRIGHT_PATH?pathToFileURL(process.env.PLAYWRIGHT_PATH).href:'playwright');
@@ -34,18 +43,20 @@ await page.evaluate(()=>localStorage.clear());await page.reload();
 await page.locator('#tutor').evaluate(img=>img.decode());
 const initialProgress=await page.evaluate(()=>localStorage.getItem('laith-english-studio-v1'));
 await page.locator('#concept-info').click();assert(await page.locator('#concept-dialog').isVisible());await page.locator('#concept-picture').evaluate(img=>img.decode());await page.screenshot({path:resolve('preview-family.png'),fullPage:true});await page.locator('#concept-replay').click();await page.keyboard.press('Escape');
-assert.equal(await page.evaluate(()=>localStorage.getItem('laith-english-studio-v1')),initialProgress,'Concepts do not affect progress');
+assert(await page.evaluate(()=>JSON.parse(localStorage.getItem('laith-english-studio-v1')).recall['words-1'].pending),'Concept records support without marking correct');
 assert(await page.locator('#concept-info').evaluate(el=>el===document.activeElement),'Dialog returns focus to the info button');
 await page.locator('#choices button').nth(1).click();assert.match(await page.locator('#feedback').innerText(),/Try again/);
 await openTopics();assert.equal(await page.locator('#retry-count').innerText(),'1');await page.locator('#topic-dialog [data-close]').click();
 await page.locator('#choices button').nth(0).click();assert.match(await page.locator('#feedback').innerText(),/Correct!/);
-await openTopics();assert.equal(await page.locator('#retry-count').innerText(),'0');await page.locator('#topic-dialog [data-close]').click();
+await openTopics();assert.equal(await page.locator('#retry-count').innerText(),'1');await page.locator('#topic-dialog [data-close]').click();
 await page.locator('#next').click();await page.locator('#reveal').click();await page.reload();await openTools();assert.equal(await page.locator('#position').innerText(),'2 / 19');await page.locator('#tools-dialog [data-close]').click();assert(await page.locator('#feedback').isHidden(),'Reload hides the answer');
-await openTopics();await page.locator('#revisit').click();await openTools();assert.equal(await page.locator('#position').innerText(),'1 / 1');await page.locator('#tools-dialog [data-close]').click();
-await page.locator('#reveal').click();await page.locator('#next').click();assert(await page.locator('#topic-dialog').isVisible());
+await openTopics();await page.locator('#revisit').click();await openTools();assert.equal(await page.locator('#position').innerText(),'1 / 2');await page.locator('#tools-dialog [data-close]').click();
+await page.locator('#reveal').click();await page.locator('#next').click();await page.locator('#next').click();assert(await page.locator('#recap-dialog').isVisible());await page.locator('#recap-topics').click();
 await page.locator('#topic-grid button').filter({hasText:'Tell me about your country'}).click();await openTools();await page.locator('#oral-retry').click();await openTools();await page.locator('#oral-correct').click();await page.locator('#reveal').click();assert.match(await page.locator('#feedback').innerText(),/Example: I live in Jordan/);
 await openTools();await page.locator('#poses').click();await page.locator('#pose-grid button').filter({hasText:'Frustrated'}).click();assert.match(await page.locator('#tutor').getAttribute('data-message'),/break it down/);
-await openTopics();await page.locator('#mixed').click();
+await openTopics();await page.locator('#mixed').click();await openTools();assert.equal(await page.locator('#position').innerText(),'1 / 10');await page.locator('#tools-dialog [data-close]').click();
+// Full-bank fixture retains exhaustive layout coverage independently of short rounds.
+await page.evaluate(ids=>{const state=JSON.parse(localStorage.getItem('laith-english-studio-v1'));state.ids=ids;state.index=0;localStorage.setItem('laith-english-studio-v1',JSON.stringify(state))},questions.map(q=>q.id));await page.reload();
 assert.equal(await page.locator('.controls button:visible').count(),3,'Only three main controls');
 assert(await page.locator('#source').isHidden());assert(await page.locator('#topic-name').isHidden());
 let checked=0;const overflow=[];
@@ -89,6 +100,14 @@ await openTools();await page.locator('#full-passage').click();assert.match(await
 await openTools();await page.locator('#source-photo').click();if(existsSync(new URL('../'+questions.find(q=>q.topic==='reading').photo,import.meta.url))){await page.locator('#photo').evaluate(img=>img.decode())}else{await page.locator('#photo').waitFor({state:'hidden'});assert.match(await page.locator('#photo-note').innerText(),/not included/)}await page.locator('#photo-dialog [data-close]').click();
 await page.setViewportSize({width:1024,height:768});await openTools();await page.locator('#size').click();assert(await page.locator('body').evaluate(el=>el.classList.contains('large')));assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
 await openTopics();await page.locator('#reset').click();await page.locator('#confirm-reset').click();await openTools();assert.equal(await page.locator('#position').innerText(),'1 / 19');await page.locator('#tools-dialog [data-close]').click();
+// Support survives reload; delayed recall clears only after a full gap.
+await openTools();await page.locator('#hint').click();await page.reload();await page.locator('#choices button').nth(0).click();
+let progress=await page.evaluate(()=>JSON.parse(localStorage.getItem('laith-english-studio-v1')));assert.equal(progress.recall['words-1'].outcome,'supported');assert(progress.recall['words-1'].pending);
+await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('laith-english-studio-v1'));s.recall['words-1'].last=Date.now()-86400001;localStorage.setItem('laith-english-studio-v1',JSON.stringify(s))});await page.reload();await page.locator('#choices button').nth(0).click();
+progress=await page.evaluate(()=>JSON.parse(localStorage.getItem('laith-english-studio-v1')));assert.equal(progress.recall['words-1'].outcome,'remembered');assert(!progress.recall['words-1'].pending);
+await page.locator('#next').click();await page.locator('#reveal').click();await openTools();await page.locator('#recap').click();assert.match(await page.locator('#recap-summary').innerText(),/1 remembered later/);await page.locator('#new-lesson').click();
+progress=await page.evaluate(()=>JSON.parse(localStorage.getItem('laith-english-studio-v1')));assert.deepEqual(progress.lesson,{});assert(progress.recall['words-2'].pending);
+for(const count of ['5','15']){await page.locator('#round-size').selectOption(count);await page.locator('#mixed').click();await openTools();assert.equal(await page.locator('#position').innerText(),'1 / '+count);await page.locator('#topics').click()}
 assert.deepEqual(errors,[],'No browser script errors');
 // Verify the delivered file also works without a server.
 const offline=await browser.newPage();await offline.goto(new URL('index.html',import.meta.url).href);assert(await offline.locator('#question').innerText());await offline.locator('#reveal').click();assert(await offline.locator('.choice.correct').isVisible());await offline.locator('#tutor').evaluate(img=>img.decode());

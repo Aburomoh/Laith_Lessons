@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased — Concept explanations and CI
+## Unreleased — Concept explanations, delayed retrieval and CI
+
+- Retain missed and supported questions for an unaided later review after a 24-hour practice gap.
+- Record hints, concepts and reveals separately from correct responses; preserve support across reloads.
+- Add short mixed rounds, tutor-only lesson recap, and spoken/phonics coaching.
 
 - Add three reusable illustrations inside relevant concept windows: family, giraffes and school arrival.
 - Correct unrelated country-clue and oral-reading explanations found during code review.

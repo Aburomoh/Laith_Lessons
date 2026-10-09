@@ -31,3 +31,13 @@
 Read the study map, README, development guide and decisions before editing. Corrected country-picture concepts that fell back to an unrelated Brazil example and oral-reading guidance that incorrectly used an age example. Added an asset registry, descriptive alt text and graceful image-load fallback. The optional local server now serves only known lesson-file categories, preventing requests for Git metadata and development files. No new runtime dependencies or learner controls were added.
 
 Validation: strict TypeScript and content checks; browser checks covering all 152 question and concept layouts at 1280 × 720, reduced motion and image loading; loopback checks for allowed assets and denied repository internals. Generated images were visually inspected. Remote CI is a separate check after publication.
+
+## 2026-10-10 — Pedagogy review: delayed retrieval
+
+Applied the user-supplied expert review locally; no issue or comment was posted. Correcting an error immediately now leaves the question in review. Hint, concept, teaching explanation and reveal events count as support; mistakes also make immediate correction supported. A successful unaided response after at least 24 hours without a recorded practice event clears review and records remembered-later evidence. A new mistake reopens review. The 24-hour interval is a transparent scheduling choice, not an evidence-based mastery threshold or guarantee of retention.
+
+Support survives navigation and reloads. Older incorrect/revealed records migrate into pending review with a fresh delay; older correct records are not retroactively labelled unaided or remembered. Opening a concept after a selected correct choice does not undo that response. Source photos and full stories remain tutor reference tools: use Hint to record any additional modelling or assistance supplied outside the tracked controls.
+
+Mixed rounds default to 10, with 5 and 15 available. Tutor-only recaps record overlapping lesson events and persist until Start new lesson recap. Starting a recap never bypasses the retrieval delay. Tutor coaching preserves flexible spoken marking, invites explanations of choices, and asks the child to read phonics words aloud before identifying spelling. No extra learner-screen labels, controls or difficulty were added.
+
+Difficulty: progress previously had one last-result field, so an immediate correction erased a miss. A separate pure transition model now retains support and review eligibility alongside the legacy last-result field. Local storage can be unavailable and records are not synchronised between devices; unrecorded tutor help cannot be inferred. Tests cover state transitions and browser reload behaviour as well as the existing exhaustive layouts.

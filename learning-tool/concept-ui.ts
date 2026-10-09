@@ -24,6 +24,6 @@ function animateConcept(){
     conceptTimer=undefined;
   },1600);
 }
-$('concept-info').onclick=()=>{$<HTMLDialogElement>('concept-dialog').showModal();animateConcept()};
+$('concept-info').onclick=()=>{if(selected!==current().answer)track('concept');$<HTMLDialogElement>('concept-dialog').showModal();animateConcept()};
 $('concept-replay').onclick=animateConcept;
 $('concept-dialog').addEventListener('close',stopConcept);

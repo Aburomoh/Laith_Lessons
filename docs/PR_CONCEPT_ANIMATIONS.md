@@ -1,6 +1,8 @@
-# Add illustrated concept explanations and a repeatable validation workflow
+# Add concept explanations and delayed retrieval with a repeatable validation workflow
 
 The tutor can now press ⓘ beside a question to show a gentle visual explanation, then replay it or close it and return to the same question. The teaching screen keeps its minimal layout. For example, He is at home becomes He is **not** at home, with not falling after is; question formation moves the be verb before the subject.
+
+Immediate correction now stays in the revisit queue. An unaided response after a 24-hour practice gap records delayed recall; hints, concepts and reveals record support. Mixed rounds offer 5/10/15 questions and an optional tutor recap, keeping the learner screen quiet.
 
 ## Teaching and implementation
 
@@ -16,7 +18,7 @@ The tutor can now press ⓘ beside a question to show a gentle visual explanatio
 
 - Strict TypeScript checks, content/source mapping checks and concept validation pass locally.
 - Browser checks pass for all 152 question and concept layouts at 1280 × 720, including image loading, with no scrolling.
-- Negation placement, inversion result, replay, reduced motion, dialog focus return and unchanged progress are tested.
+- Negation placement, inversion result, replay, reduced motion, dialog focus return, support tracking and delayed-retrieval transitions are tested.
 - CI adds a clean npm install, type/build/content checks, committed-build verification, Chromium tests and screenshot artifacts.
 - Remote CI results will be checked after publication; local passes are not presented as remote CI success.
 
