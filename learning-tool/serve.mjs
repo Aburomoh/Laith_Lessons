@@ -7,7 +7,12 @@ const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css
 createServer(async (req, res) => {
   try {
     const pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
-    const path = resolve(root, '.' + (pathname === '/' ? '/learning-tool/index.html' : pathname));
+    const route = pathname === '/' ? '/learning-tool/index.html' : pathname;
+    const allowed = /^\/learning-tool\/(?:index\.html|app\.js|styles\.css|assets\/[\w-]+\.png)$/.test(route)
+      || /^\/tutor poses\/tutor_[\w-]+\.png$/.test(route)
+      || /^\/WhatsApp Image [\w ().-]+\.jpeg$/.test(route);
+    if (!allowed) { res.writeHead(404).end('Not found'); return; }
+    const path = resolve(root, '.' + route);
     if (!path.startsWith(root + sep)) { res.writeHead(403).end(); return; }
     const bytes = await readFile(path);
     res.writeHead(200, { 'Content-Type': mime[extname(path)] || 'application/octet-stream' }); res.end(bytes);

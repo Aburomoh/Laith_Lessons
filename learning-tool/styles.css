@@ -10,3 +10,5 @@ dialog{border:0;border-radius:20px;background:#faf9f5;color:#233d42;width:min(85
 @media(max-width:540px){#concept-dialog{padding:22px}#concept-words{padding:50px 0 20px;gap:5px}.concept-word{font-size:28px;padding:6px}#concept-caption{font-size:21px}}
 /* One phonics emphasis: connected word, green bold sound letters, split-pattern underline. */
 #concept-words.phonics{gap:0;flex-wrap:nowrap}.phonics .concept-word{padding:0;border-radius:0;font-size:clamp(52px,6vw,82px);font-weight:400}.phonics .concept-focus{background:transparent;color:#24573b;font-weight:700}.phonics .phonics-bridge{border-bottom:3px solid #24573b;padding-bottom:6px}
+#concept-picture{display:block;margin:0 auto;width:min(100%,520px);height:230px;object-fit:contain;border-radius:12px}.illustrated #concept-words{min-height:90px;padding:16px 0 8px;gap:8px}.illustrated .concept-word{font-size:clamp(24px,2.5vw,34px);padding:5px 8px}.illustrated #concept-caption{font-size:22px;margin:8px auto 18px}.illustrated .dialog-heading{margin-bottom:10px}
+@media(max-height:740px){#concept-picture{height:190px}.illustrated#concept-dialog{padding:22px}.illustrated .concept-word{font-size:26px}}

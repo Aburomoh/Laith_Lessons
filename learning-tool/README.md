@@ -26,7 +26,7 @@ The vocabulary continuation's page number is not visible, so the interface does 
 
 The ambiguous Friday sound question is explicitly reframed as an **ay spelling** question. Its explanation in Tutor tools explains that tail, plane and holiday all have long A. No original listening recordings are included. Open writing uses model answers, with clear instructions to accept other suitable answers and personalise facts rather than assume Laith's country.
 
-The **ⓘ** beside the question opens a short concept animation. Replay repeats it; Escape or × closes it. Some concepts use clearly labelled teaching examples. Opening it does not change the score or advance the question. With reduced motion enabled on the device, the final state appears immediately. No generated pictures have been needed so far.
+The **ⓘ** beside the question opens a short concept animation. Replay repeats it; Escape or × closes it. Relevant family, giraffe and travel/arrival concepts include one simple illustration. Some concepts use clearly labelled teaching examples. Opening it does not change the score or advance the question. With reduced motion enabled on the device, the final state appears immediately. Image prompts and provenance are recorded in ../docs/ILLUSTRATIONS.md.
 
 ## Source and development
 

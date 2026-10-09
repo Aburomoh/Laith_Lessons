@@ -2,6 +2,9 @@
 
 ## Unreleased — Concept explanations and CI
 
+- Add three reusable illustrations inside relevant concept windows: family, giraffes and school arrival.
+- Correct unrelated country-clue and oral-reading explanations found during code review.
+- Restrict the local preview server to lesson assets; verify all concept windows fit at 1280 × 720.
 - Keep phonics words joined; highlight long-A letters with one colour and bold weight, and connect split a_e with a simple underline.
 - Add an optional ⓘ concept window with gentle word animation, replay and reduced-motion support.
 - Explain negation, question order, contractions, possession, phonics, capitals and related source concepts.

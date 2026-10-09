@@ -18,10 +18,16 @@
 
 **Scope:** All nine topics have a visual explanation. Negation, inversion, contractions, pronoun/possessive mapping, capitalisation and spelling patterns use relevant word transformations. Some topics use a labelled illustrative example, rather than claiming an animation unique to every question. Opening a concept may disclose helpful answer information: this is a tutor-directed teaching aid, not an exam integrity mode.
 
-**Pictures:** Generated images are permitted by the user when needed, but none are currently needed for these word transformations. Live text stays sharp during screen sharing, is easy to correct, and avoids spelling errors inside raster artwork. Future pictures should support a specific question, preserve the simple difficulty level and be recorded with their source/generation details.
+**Pictures:** Grammar transformations use live text. Following the user's illustration approval, three images support relevant vocabulary and reading concepts: a fictional family, giraffes with visible spot patterns, and school arrival. One picture appears only inside the optional concept window. Prompts and provenance are in ILLUSTRATIONS.md. Reuse keeps generation and asset costs small. These are illustrative scenes, not portraits of the people in the reading passage.
 
 **Phonics typography:** Keep letters joined as a real word, rather than separate padded tiles. Use the same dark green and bold weight for a_e, ai and ay. A single underline connects the a and silent e across their consonant. Surrounding letters stay plain; avoid italics, colour legends and multiple competing emphasis styles. Typography appears only in the optional concept window so a spelling question is not answered by its own styling.
 
 **Accessibility:** Reduced-motion preference shows the final state immediately. The final result remains readable as real text, with an explanatory caption; focus and Escape use native dialog behaviour.
 
 **Difficulty encountered:** The GitHub destination was initially empty, so there was no default-branch baseline for a conventional feature PR. An earlier push was blocked by automatic approval review because the repository is public and the content derives from private worksheet photos. Original photos remain excluded. Publishing must respect the approval result; do not bypass it through alternate tools. GitHub CLI network/authentication checks also require the allowed network execution context.
+
+## 2026-10-10 — Focused code review
+
+Read the study map, README, development guide and decisions before editing. Corrected country-picture concepts that fell back to an unrelated Brazil example and oral-reading guidance that incorrectly used an age example. Added an asset registry, descriptive alt text and graceful image-load fallback. The optional local server now serves only known lesson-file categories, preventing requests for Git metadata and development files. No new runtime dependencies or learner controls were added.
+
+Validation: strict TypeScript and content checks; browser checks covering all 152 question and concept layouts at 1280 × 720, reduced motion and image loading; loopback checks for allowed assets and denied repository internals. Generated images were visually inspected. Remote CI is a separate check after publication.

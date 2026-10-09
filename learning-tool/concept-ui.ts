@@ -4,6 +4,9 @@ function stopConcept(){if(conceptTimer!==undefined)clearTimeout(conceptTimer);co
 function animateConcept(){
   stopConcept();const c=conceptFor(current());const row=$('concept-words');const caption=$('concept-caption');
   $('concept-title').textContent=c.title;caption.textContent=c.caption;
+  const picture=$<HTMLImageElement>('concept-picture');const key=illustrationFor(current());
+  picture.hidden=!key;$('concept-dialog').classList.toggle('illustrated',!!key);
+  if(key){picture.alt=illustrations[key].alt;picture.src=illustrations[key].src;picture.onerror=()=>{picture.hidden=true;$('concept-dialog').classList.remove('illustrated')}}else picture.removeAttribute('src');
   row.classList.toggle('phonics',!!c.phonics);
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fill=(tokens:string[],final:boolean)=>{row.replaceChildren();tokens.forEach((word,i)=>{const el=document.createElement('span');el.textContent=word;el.className='concept-word';if(final&&c.focus.includes(i))el.classList.add('concept-focus');if(final&&c.phonics==='a_e'&&i>=c.focus[0]&&i<=c.focus.at(-1)!)el.classList.add('phonics-bridge');row.append(el)})};

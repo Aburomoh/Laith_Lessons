@@ -208,6 +208,20 @@ oral('writing','writing','Say three sentences about your country without the sen
 
 
 const splitWords=(text       )=>text.trim().split(/\s+/);
+const illustrations = {
+  family: {src:'assets/family.png',alt:'Two grandparents, two parents, a son and a daughter standing together.'},
+  giraffes: {src:'assets/giraffes.png',alt:'Two giraffes with long necks and different spot patterns.'},
+  arrival: {src:'assets/arrival.png',alt:'A bus has arrived at school. A child steps out onto the pavement.'}
+};
+function illustrationFor(q         )                                         {
+  if(q.topic==='words'){
+    if(/“(?:grandparents|parents|son|daughter)”/.test(q.prompt)||['parents','daughter'].includes(q.answer))return 'family';
+    if(/“(?:arrive|travel)”/.test(q.prompt)||['arrive','travel'].includes(q.answer))return 'arrival';
+  }
+  if(q.topic==='world'&&/giraffe picture/.test(q.prompt))return 'giraffes';
+  if(q.topic==='reading'&&/giraffes|giraffe|noses|spots|tall|short|pronoun|refer to|Read these sentences/.test(q.prompt)&&!/Who are Julian/.test(q.prompt))return 'giraffes';
+  return undefined;
+}
 function conceptFor(q         )         {
   const concept=(title       ,before         ,after         ,focus         ,caption       ,movement                    ='move')        =>({title,before,after,focus,caption,movement});
   // Explicit grammar triggers take precedence over broad topic examples.
@@ -257,9 +271,11 @@ function conceptFor(q         )         {
     if(/noun/.test(q.prompt))return concept('A naming word',['We','help','our','parents.'],['We','help','our','parents.'],[3],'Parents names people. It is a noun.','fade');
     const fact=/Julian/.test(q.prompt)?'Julian and Stephanie are giraffe experts.':/Luca.*(?:old|dad)|dad/.test(q.prompt)?'Luca’s dad is from Australia.':/mum/.test(q.prompt)?'Luca’s mum is from Germany.':/spots|recognise/.test(q.prompt)?'Giraffes have different spots.':/photos|use/.test(q.prompt)?'We use photos.':/noses/.test(q.prompt)?'Their noses are soft.':/grandparents/.test(q.prompt)?'We don’t see our grandparents very often.':/Melvin/.test(q.prompt)?'Melvin is Molly’s favourite giraffe.':/Namibia|live/.test(q.prompt)?'They live in Namibia. They aren’t from Namibia.':/male child/.test(q.prompt)?'A son is a male child.':/old is Luca/.test(q.prompt)?'Luca is twelve years old.':'Molly is nine years old.';
     if(!/Read these sentences/.test(q.prompt))return concept('Find the evidence',splitWords(fact),splitWords(fact),splitWords(fact).map((_,i)=>i),'Read the passage. Find words that support your answer.','fade');
-    return concept('Find the evidence',['Molly','is','nine','years','old.'],['Molly','is','nine','years','old.'],[2],'For an age question, find the age in the story. This is an example.','fade');
+    return concept('Read with pauses',['Giraffes','are','cool.','They','are','tall.'],['Giraffes','are','cool.','They','are','tall.'],[2,5],'Pause at each full stop.','fade');
   }
   if(q.topic==='world'){
+    const clue=q.prompt.match(/which country matches the (.+) picture/);
+    if(clue)return concept('Picture clue',[clue[1],'→','___'],[clue[1],'→',q.answer],[2],'This is the picture-and-country pair in your worksheet.','fade');
     const country=q.prompt.match(/continent matches (.+)\?/);
     if(country)return concept('Country → continent',[country[1],'→','___'],[country[1],'→',q.answer],[2],'A country is in a continent. Use the worksheet’s labels.','fall');
     return concept('Country and continent',['Brazil','→','___'],['Brazil','→','South America'],[2],'Brazil is a country. South America is a continent. This is an example.','fall');
@@ -338,6 +354,9 @@ function stopConcept(){if(conceptTimer!==undefined)clearTimeout(conceptTimer);co
 function animateConcept(){
   stopConcept();const c=conceptFor(current());const row=$('concept-words');const caption=$('concept-caption');
   $('concept-title').textContent=c.title;caption.textContent=c.caption;
+  const picture=$                  ('concept-picture');const key=illustrationFor(current());
+  picture.hidden=!key;$('concept-dialog').classList.toggle('illustrated',!!key);
+  if(key){picture.alt=illustrations[key].alt;picture.src=illustrations[key].src;picture.onerror=()=>{picture.hidden=true;$('concept-dialog').classList.remove('illustrated')}}else picture.removeAttribute('src');
   row.classList.toggle('phonics',!!c.phonics);
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fill=(tokens         ,final        )=>{row.replaceChildren();tokens.forEach((word,i)=>{const el=document.createElement('span');el.textContent=word;el.className='concept-word';if(final&&c.focus.includes(i))el.classList.add('concept-focus');if(final&&c.phonics==='a_e'&&i>=c.focus[0]&&i<=c.focus.at(-1) )el.classList.add('phonics-bridge');row.append(el)})};

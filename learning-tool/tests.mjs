@@ -4,7 +4,7 @@ import { runInNewContext } from 'node:vm';
 import assert from 'node:assert/strict';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-const data=runInNewContext(['questions.ts','concepts.ts'].map(name=>stripTypeScriptTypes(readFileSync(new URL(name,import.meta.url),'utf8'))).join('\n')+'\n({questions,topics,sources,conceptFor})');
+const data=runInNewContext(['questions.ts','concepts.ts'].map(name=>stripTypeScriptTypes(readFileSync(new URL(name,import.meta.url),'utf8'))).join('\n')+'\n({questions,topics,sources,conceptFor,illustrations,illustrationFor})');
 const {questions,topics,sources}=data;
 const appSource=stripTypeScriptTypes(readFileSync(new URL('app.ts',import.meta.url),'utf8'));
 const poseDeclaration=appSource.match(/const poses[^=]*=([^;]+);/s)[0];
@@ -17,6 +17,10 @@ for(const q of questions){assert(topics.some(t=>t.id===q.topic));for(const key o
 for(const q of questions){const c=data.conceptFor(q);assert(c.title&&c.caption,`Concept text: ${q.id}`);assert(c.before.length&&c.after.length);assert([...c.before,...c.after].every(t=>typeof t==='string'&&t.length));assert(c.focus.every(i=>i>=0&&i<c.after.length));}
 for(const q of questions.filter(q=>q.topic==='be'&&/negative:/i.test(q.prompt))){const c=data.conceptFor(q);assert.equal(c.after[2],'not','Not must follow the be verb');assert(['am','is','are'].includes(c.after[1]));assert.equal(c.movement,'fall');}
 const inverted=data.conceptFor(questions.find(q=>q.prompt==='Make a question: He is at home.'));assert.equal(inverted.after.join(' '),'Is he at home?');
+for(const art of Object.values(data.illustrations))assert(existsSync(new URL(art.src,import.meta.url)),`Missing illustration: ${art.src}`);
+for(const q of questions){const key=data.illustrationFor(q);if(key)assert(data.illustrations[key]);}
+assert.equal(data.conceptFor(questions.find(q=>q.prompt.includes('guitar picture'))).after.at(-1),'Spain');
+assert.equal(data.conceptFor(questions.find(q=>q.prompt==='Read these sentences aloud.')).title,'Read with pauses');
 console.log(`Content checks passed: ${questions.length} questions, ${topics.length} topics, 13 source photos.`);
 if(!process.argv.includes('--browser'))process.exit(0);
 const {chromium}=await import(process.env.PLAYWRIGHT_PATH?pathToFileURL(process.env.PLAYWRIGHT_PATH).href:'playwright');
@@ -29,7 +33,7 @@ await page.goto(new URL('index.html',import.meta.url).href);
 await page.evaluate(()=>localStorage.clear());await page.reload();
 await page.locator('#tutor').evaluate(img=>img.decode());
 const initialProgress=await page.evaluate(()=>localStorage.getItem('laith-english-studio-v1'));
-await page.locator('#concept-info').click();assert(await page.locator('#concept-dialog').isVisible());await page.locator('#concept-replay').click();await page.keyboard.press('Escape');
+await page.locator('#concept-info').click();assert(await page.locator('#concept-dialog').isVisible());await page.locator('#concept-picture').evaluate(img=>img.decode());await page.screenshot({path:resolve('preview-family.png'),fullPage:true});await page.locator('#concept-replay').click();await page.keyboard.press('Escape');
 assert.equal(await page.evaluate(()=>localStorage.getItem('laith-english-studio-v1')),initialProgress,'Concepts do not affect progress');
 assert(await page.locator('#concept-info').evaluate(el=>el===document.activeElement),'Dialog returns focus to the info button');
 await page.locator('#choices button').nth(1).click();assert.match(await page.locator('#feedback').innerText(),/Try again/);
@@ -46,12 +50,18 @@ assert.equal(await page.locator('.controls button:visible').count(),3,'Only thre
 assert(await page.locator('#source').isHidden());assert(await page.locator('#topic-name').isHidden());
 let checked=0;const overflow=[];
 for(let i=0;i<questions.length;i++){
+  // Every optional concept, including illustrations, must fit the lesson viewport.
+  await page.emulateMedia({reducedMotion:'reduce'});await page.locator('#concept-info').click();
+  if(await page.locator('#concept-picture').isVisible())await page.locator('#concept-picture').evaluate(img=>img.decode());
+  const conceptFits=await page.locator('#concept-dialog').evaluate(el=>el.scrollHeight<=el.clientHeight+1&&el.scrollWidth<=el.clientWidth+1);
+  assert(conceptFits,`Concept overflow: ${await page.locator('#question').textContent()}`);await page.keyboard.press('Escape');
   await page.locator('#reveal').click();
   const bounds=await page.evaluate(()=>({width:document.documentElement.scrollWidth,height:document.documentElement.scrollHeight,screenWidth:innerWidth,screenHeight:innerHeight,prompt:document.querySelector('#question').textContent}));
   if(bounds.width>bounds.screenWidth+1||bounds.height>bounds.screenHeight+1)overflow.push(bounds);
   checked++;
   if(i<questions.length-1)await page.locator('#next').click();
 }
+await page.emulateMedia({reducedMotion:'no-preference'});
 console.log(`Screen-share layout checks: ${checked} revealed questions at 1280×720; ${overflow.length} require vertical scrolling.`);
 if(overflow.length)console.log(JSON.stringify(overflow.slice(0,12),null,2));
 assert.equal(overflow.filter(b=>b.width>b.screenWidth+1).length,0,'No horizontal clipping');
