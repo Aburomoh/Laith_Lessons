@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-10 — Larger tutor on phones
+
+- On phones the tutor fills the space below the answers (up to 300px tall, never below 90px), so it is much larger while the controls stay on screen.
+
 ## 2026-10-10 — Score box and reset
 
 - Show how many answers Laith has got right and wrong in Tutor tools.
