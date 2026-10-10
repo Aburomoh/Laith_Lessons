@@ -23,9 +23,10 @@ html{-webkit-text-size-adjust:100%}button,summary,select{touch-action:manipulati
 @media(max-height:500px) and (min-width:541px){main{padding:52px max(24px,env(safe-area-inset-right)) 18px max(24px,env(safe-area-inset-left))}.stage{padding:0 0 20px;gap:20px}h1,.reading-question h1{font-size:30px;margin-bottom:18px}.choice{font-size:26px;padding:12px;min-height:60px}#tutor{max-height:min(62dvh,230px)}dialog{max-height:90dvh}}
 
 .score-box{display:flex;gap:12px;margin:0 0 18px}.score-box div{flex:1;border-radius:14px;padding:10px 16px;font-size:18px}.score-box strong{font-size:30px;margin-right:6px}.score-right{background:#e6f0e8;color:#24573b}.score-wrong{background:#f6e6e1;color:#8a3b2a}
-.controls #next{border:2px solid #cfdcd3;background:#eef3ef;border-radius:50%;width:58px;height:58px;min-width:58px;padding:0 0 4px;line-height:1;display:inline-flex;align-items:center;justify-content:center}
+.controls #next{border:2px solid transparent;background:transparent;border-radius:50%;transition:background .2s,border-color .2s;width:58px;height:58px;min-width:58px;padding:0 0 4px;line-height:1;display:inline-flex;align-items:center;justify-content:center}
 #tools-dialog{width:min(420px,94vw)}#tools-dialog .dialog-heading{margin-bottom:14px}.menu-place{margin:0;font-size:18px}
 .menu-list{display:flex;flex-direction:column;gap:6px}.menu-list>button,.menu-list summary,.menu-row>button{width:100%;text-align:left;font-size:19px;padding:9px 16px;min-height:44px;border-radius:12px;border:1px solid #e1e7e1;background:#fff}
 .menu-list>button small{display:block;font-size:14px;color:#68786e;margin-top:2px}.menu-list details{border-radius:12px}.menu-list summary{list-style:none}.menu-list summary::-webkit-details-marker{display:none}.menu-list details[open] summary{border-radius:12px 12px 0 0}.menu-list details p{margin:0;padding:10px 16px;background:#fff;border:1px solid #e1e7e1;border-top:0;border-radius:0 0 12px 12px}
 .menu-row{display:flex;gap:6px}.menu-row>button{flex:1}.menu-row select{font-size:18px;border-radius:12px;border:1px solid #e1e7e1;background:#fff;padding:0 10px}#spoken{margin-bottom:12px}#spoken button{text-align:center}
 .menu-list .menu-danger{color:#8a3b2a;background:transparent;border-color:transparent;margin-top:6px}[hidden]{display:none!important}
+.controls #next.ready{border-color:#cfdcd3;background:#eef3ef}

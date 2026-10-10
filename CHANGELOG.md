@@ -9,7 +9,7 @@
 ## 2026-10-10 — Clearer controls
 
 - Disable Answer once the right choice is picked (spoken and writing questions keep it, so the example answer can still be shown).
-- Put a soft circle around the next arrow.
+- Put a soft circle around the next arrow once Laith answers correctly; it clears on the next question.
 
 ## 2026-10-10 — Gentle crossed-X more often
 
