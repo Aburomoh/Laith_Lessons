@@ -25,6 +25,6 @@ The interface adapts to iPhone, iPad and Android screen sizes, with touch contro
 - Short feedback, expressive tutor poses, mixed practice and a revisit queue.
 - Local browser progress and TypeScript/CSS source.
 
-All 28 original page photographs are approved for the repository by the owner, but have not been uploaded yet; add them at the repository root from the original folder. The repository holds 18 tutor portraits and 3 concept illustrations. Keep the photographs at the repository root so the local source-photo viewer can find them. The lightweight GitHub Pages package excludes the original photographs; the app works without them.
+All 28 original page photographs are included in the repository with the owner’s approval, alongside 18 tutor portraits and 3 concept illustrations. Keep the photographs at the repository root so the local source-photo viewer can find them. The lightweight GitHub Pages package excludes the original photographs; the app works without them.
 
 See [the teaching and development guide](learning-tool/README.md) for keyboard shortcuts, source notes and build instructions.

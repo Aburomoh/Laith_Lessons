@@ -2,7 +2,7 @@
 
 ## Open and teach
 
-Double-click **index.html** in this folder. It runs offline in a modern browser; no installation or account is needed. Keep this folder beside the existing `tutor poses` folder for the character images. All 28 original JPEG page photos are approved for the repository; place them at its root once uploaded. They remain optional for teaching and are omitted from the lightweight Pages website package.
+Double-click **index.html** in this folder. It runs offline in a modern browser; no installation or account is needed. Keep this folder beside the existing `tutor poses` folder for the character images. All 28 original JPEG page photos are approved for the repository and included at its root. They remain optional for teaching and are omitted from the lightweight Pages website package.
 
 You can also double-click **Open English Studio.cmd** in the parent folder to launch it in your default browser.
 
