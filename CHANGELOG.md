@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-10 — Interactive lessons
+
+- Add Interactive lesson to the ⋯ menu on 96 grammar and concept questions: five steps with colour-coded words that glide into place, a turn on the question itself and a one-line summary. The pen works in lessons.
+- Restore the browser test's check for page script errors, dropped by mistake when the pen tests were added.
+
 ## 2026-10-10 — Two new readings and a tidier menu
 
 - Add The parrot family and A new home in Tokyo: two extra readings at the giraffe page's level, 15 questions each, with two new words per passage.

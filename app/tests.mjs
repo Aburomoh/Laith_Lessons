@@ -4,7 +4,7 @@ import { runInNewContext } from 'node:vm';
 import assert from 'node:assert/strict';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-const data=runInNewContext(['questions.ts','concepts.ts'].map(name=>stripTypeScriptTypes(readFileSync(new URL(name,import.meta.url),'utf8'))).join('\n')+'\n({questions,topics,sources,conceptFor,illustrations,illustrationFor})');
+const data=runInNewContext(['questions.ts','concepts.ts','lessons.ts'].map(name=>stripTypeScriptTypes(readFileSync(new URL(name,import.meta.url),'utf8'))).join('\n')+'\n({questions,topics,sources,conceptFor,illustrations,illustrationFor,lessonFor})');
 const {questions,topics,sources}=data;
 const appSource=stripTypeScriptTypes(readFileSync(new URL('app.ts',import.meta.url),'utf8'));
 const poseDeclaration=appSource.match(/const poses[^=]*=([^;]+);/s)[0];
@@ -30,7 +30,23 @@ for(const aid of ['hint','concept','revealed']){let r=recordPractice(undefined,a
 assert.equal(recordPractice(undefined,'correct',1000).outcome,'unaided');
 assert(recordPractice(recall,'retry',3001+reviewDelay).pending,'A later miss reopens review');
 console.log('Delayed retrieval checks passed: correction, help, delay and reopened review.');
-console.log(`Content checks passed: ${questions.length} questions, ${topics.length} topics, 13 source photos.`);
+// Interactive lessons: grammar and concept questions only, each with model steps, a practice on the question itself and a summary.
+const withLessons=questions.filter(q=>data.lessonFor(q));
+assert(withLessons.length>=90,`Lessons cover the grammar questions (${withLessons.length})`);
+for(const q of questions.filter(q=>['phonics','writing'].includes(q.topic)))assert(!data.lessonFor(q),`No lesson for ${q.id}`);
+for(const q of ['be','origins','possessives','capitals'].flatMap(t=>questions.filter(q=>q.topic===t&&q.id!=='origins-8')))assert(data.lessonFor(q),`Lesson for ${q.id}`);
+for(const q of withLessons){const l=data.lessonFor(q);const p=l.practice;
+  assert(l.title&&l.rule&&l.example.length&&l.steps.length>=3,`Lesson shape: ${q.id}`);
+  for(const tiles of [...l.steps.flatMap(s=>[s.tiles,s.then||[]]),p.tiles,p.after,l.example]){const ids=tiles.map(t=>t.id);assert.equal(new Set(ids).size,ids.length,`Unique tile ids: ${q.id}`)}
+  assert(p.after.length||p.mode==='pick',`Practice result: ${q.id}`);
+  if(p.mode==='gap'){assert.equal(p.tiles.filter(t=>t.gap).length,1,`One gap: ${q.id}`);assert(p.options.some(o=>o.text===p.answer),`Gap answer offered: ${q.id}`);assert(p.after.some(t=>t.text===p.answer),`Gap filled: ${q.id}`)}
+  if(p.mode==='pick')assert(p.options.some(o=>o.text===p.answer),`Pick answer offered: ${q.id}`);
+  if(p.mode==='place'){assert(p.slot>=0&&p.slot<=p.tiles.length,`Slot in range: ${q.id}`);assert.equal(p.after.map(t=>t.text).join(' ').replace(/ ([.?!,])/g,'$1'),q.answer,`Placed sentence matches the answer: ${q.id}`)}
+  // Worked examples never show the question's own answer before the practice step.
+  const shown=l.steps.flatMap(s=>[s.tiles,s.then||[]]).map(t=>t.map(x=>x.text).join(' ').replace(/ ([.?!,])/g,'$1'));
+  if(q.answer.split(' ').length>2)assert(!shown.includes(q.answer),`Example gives away the answer: ${q.id}`);
+}
+console.log(`Content checks passed: ${questions.length} questions, ${topics.length} topics, 13 source photos, ${withLessons.length} interactive lessons.`);
 if(!process.argv.includes('--browser'))process.exit(0);
 const {chromium}=await import(process.env.PLAYWRIGHT_PATH?pathToFileURL(process.env.PLAYWRIGHT_PATH).href:'playwright');
 const browser=await chromium.launch({headless:true});
@@ -118,14 +134,33 @@ for(const count of ['5','15']){await page.evaluate(()=>document.querySelectorAll
 // The menu is a short list: no guide or expression picker.
 await openTools();assert.equal(await page.locator('#help, #poses').count(),0);await page.locator('#tools-dialog [data-close]').click();
 // Pen: draws over the screen, never blocks the lesson when off, and clears on a new question.
-{await page.evaluate(()=>document.querySelectorAll('dialog[open]').forEach(d=>d.close()));
+await page.evaluate(()=>document.querySelectorAll('dialog[open]').forEach(d=>d.close()));
 const inked=()=>page.locator('#ink').evaluate(c=>{const d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;for(let i=3;i<d.length;i+=4)if(d[i])return true;return false});
 assert(await page.locator('#pen-bar').isHidden());await page.locator('#pen').click();assert(await page.locator('#pen-bar').isVisible());
 await page.locator('.pen-color[aria-label="Blue"]').click();await page.mouse.move(300,300);await page.mouse.down();await page.mouse.move(420,360,{steps:8});await page.mouse.up();assert(await inked(),'Pen draws');
 await page.locator('#pen-undo').click();assert(!await inked(),'Undo removes the stroke');
 await page.mouse.move(300,300);await page.mouse.down();await page.mouse.move(420,360,{steps:8});await page.mouse.up();
 await page.keyboard.press('p');assert(await page.locator('#pen-bar').isHidden(),'P turns the pen off');assert(await inked(),'Ink stays when the pen is off');
-await page.locator('#next').click();assert(!await inked(),'A new question clears the ink');}
+await page.locator('#next').click();assert(!await inked(),'A new question clears the ink');
+// Interactive lesson: opened from the menu on a grammar question, stepped with buttons and keys, practised on the question, then closed.
+{await page.evaluate(()=>document.querySelectorAll('dialog[open]').forEach(d=>d.close()));
+await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('laith-english-studio-v1'));s.ids=['be-10','words-6'];s.index=0;localStorage.setItem('laith-english-studio-v1',JSON.stringify(s))});await page.reload();
+await openTools();assert(await page.locator('#lesson-open').isVisible(),'Lesson offered on a grammar question');await page.locator('#lesson-open').click();
+assert(await page.locator('#lesson').isVisible());assert.equal(await page.locator('#lesson-title').innerText(),'Making a question');
+const stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('laith-english-studio-v1')));assert(stored.recall['be-10']?.pending,'A lesson before answering counts as support');
+await page.keyboard.press('ArrowRight');await page.keyboard.press('ArrowRight');assert.equal(await page.locator('#lesson-dots .on').count(),1);
+await page.locator('#lesson-next').click();assert.equal(await page.locator('#lesson').getAttribute('data-view'),'practice');
+await page.locator('.lesson-slot').nth(2).click();assert(!await page.locator('#lesson-caption').evaluate(c=>c.classList.contains('done')),'Wrong slot is not accepted');
+await page.locator('.lesson-slot').nth(0).click();await page.waitForTimeout(900);
+assert.equal(await page.locator('#lesson-stage').innerText().then(t=>t.replace(/\s+/g,' ').replace(/ ([.?])/g,'$1').trim()),'Is he at home?');
+await page.locator('#pen').click();await page.mouse.move(400,300);await page.mouse.down();await page.mouse.move(500,340,{steps:6});await page.mouse.up();
+assert(await inked(),'Pen draws over the lesson');
+await page.keyboard.press('Escape');assert(await page.locator('#lesson').isVisible(),'Esc turns the pen off first');
+await page.locator('#lesson-next').click();assert.equal(await page.locator('#lesson').getAttribute('data-view'),'summary');assert(!await inked(),'A new lesson step clears the ink');
+await page.keyboard.press('Escape');assert(await page.locator('#lesson').isHidden(),'Esc closes the lesson');
+await openTools();assert.equal(await page.locator('#position').innerText(),'1 / 2','Lesson keys did not change the question');await page.locator('#tools-dialog [data-close]').click();
+await page.locator('#next').click();await openTools();assert(await page.locator('#lesson-open').isHidden(),'No lesson on a vocabulary meaning question');await page.locator('#tools-dialog [data-close]').click();}
+assert.deepEqual(errors,[],'No browser script errors');
 
 // Verify the delivered file also works without a server.
 const offline=await browser.newPage();await offline.goto(new URL('index.html',import.meta.url).href);assert(await offline.locator('#question').innerText());await offline.locator('#reveal').click();assert(await offline.locator('.choice.correct').isVisible());await offline.locator('#tutor').evaluate(img=>img.decode());

@@ -8,7 +8,7 @@ You can also double-click **Open English Studio.cmd** in the parent folder to la
 
 For Teams, share the browser window, open ⋯ → Full screen and use Larger text if Laith needs larger text. The default layout is designed for a landscape screen. If enlarged text needs more space on a smaller display, scroll or reduce the text size.
 
-Laith answers aloud. The tutor selects his choice. The screen has back, Answer and next controls only. Open ⋯ for the menu: Topics (choose a lesson or Practise again), Mixed practice (a shuffled round of 5, 10 or 15 questions), Source photo, Full story on reading questions, More (Hint, Explanation, Larger text, Full screen) and Reset progress. On spoken and writing questions the menu also shows ✓ Correct and ↻ Try again. Next never advances automatically. Missed, hinted, explained and revealed questions remain in review after immediate correction. They clear only after an unaided correct response at least 24 hours after their last recorded practice. This is a practical schedule, not a mastery score.
+Laith answers aloud. The tutor selects his choice. The screen has back, Answer and next controls only. Open ⋯ for the menu: Topics (choose a lesson or Practise again), Mixed practice (a shuffled round of 5, 10 or 15 questions), Interactive lesson, Source photo, Full story on reading questions, More (Hint, Explanation, Larger text, Full screen) and Reset progress. On spoken and writing questions the menu also shows ✓ Correct and ↻ Try again. Next never advances automatically. Missed, hinted, explained and revealed questions remain in review after immediate correction. They clear only after an unaided correct response at least 24 hours after their last recorded practice. This is a practical schedule, not a mastery score.
 
 Finish a round to see correct responses, support, misses, reveals and successful delayed recall. Counts may overlap. Start new lesson recap clears only the recap; it never clears the review queue or bypasses the delay. The recap otherwise persists across reloads.
 
@@ -31,6 +31,12 @@ The vocabulary continuation's page number is not visible, so the interface does 
 The ambiguous Friday sound question is explicitly reframed as an **ay spelling** question. Its explanation in the ⋯ menu explains that tail, plane and holiday all have long A. No original listening recordings are included. Open writing uses model answers, with clear instructions to accept other suitable answers and personalise facts rather than assume Laith's country.
 
 The **ⓘ** beside the question opens a short concept animation. Replay repeats it; Escape or × closes it. Relevant family, giraffe and travel/arrival concepts include one simple illustration. Some concepts use clearly labelled teaching examples. Opening it before answering records support and schedules later review, without recording an answer or advancing the question. Teaching explanations are collapsed in tutor tools; opening one also records support. With reduced motion enabled on the device, the final state appears immediately. Image prompts and provenance are recorded in ../docs/ILLUSTRATIONS.md.
+
+## Interactive lessons
+
+On grammar and concept questions, ⋯ → Interactive lesson opens a full-screen lesson of five short steps: a model sentence, the change shown by words gliding into their new places, a second example, Laith's turn on the question itself, and a one-line summary. Step with the arrows on screen or the ← / → keys; Esc closes. Colours mean the same thing in every lesson: he/she/they blue, am/is/are orange, not red, my/his/their green, Where purple, nouns teal, adjectives pink, capitals red, key words highlighted; important words are also bold. In Laith's turn he answers aloud and the tutor clicks: fill the gap, pick the right word, click where a word goes, or show the answer after he says it. The pen works on every step and clears between steps. Opening a lesson before answering counts as support, like a hint.
+
+Lessons cover am/is/are, negatives with not, questions, short answers, short forms, Where … from?, possessive adjectives, capital letters, nouns/verbs/adjectives, pronouns, days of the week, family words and continents vs countries. Worked examples use similar sentences, never the question's own answer.
 
 ## Extra readings
 

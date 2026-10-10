@@ -374,6 +374,204 @@ function recordLesson(previous                       ,event              ,recall
     remembered:!!previous?.remembered||recall.outcome==='remembered'};
 }
 
+// Interactive lessons: one rule per lesson, shown with a model, a second example, a turn for Laith and a one-line summary.
+// Worked examples use parallel sentences; the question's own sentence appears only in the practice step.
+
+
+
+// gap: choose the word for the gap · pick: choose the right tile · place: put the lifted tile in the right slot · say: answer aloud, then show.
+
+
+
+const autoRoles                            = {i:'who',you:'who',he:'who',she:'who',it:'who',we:'who',they:'who',am:'be',is:'be',are:'be','’m':'be','’s':'be','’re':'be',not:'not','isn’t':'be','aren’t':'be',my:'own',your:'own',his:'own',her:'own',its:'own',our:'own',their:'own',where:'q'};
+
+// "He/who is at home." → tiles. word/role#id sets a role and a stable id; _ joins words; | breaks the line; ___ is a gap.
+// Tiles keep their id between steps, so a word that changes or moves animates instead of reappearing.
+function lessonTiles(spec       , auto=true)              {
+  const out              = []; const seen = new Map               ();
+  const id = (base       )=>{const n=(seen.get(base)||0)+1;seen.set(base,n);return n===1?base:`${base}${n}`};
+  for (const token of spec.trim().split(/\s+/)) {
+    if (token==='|') {out.push({id:id('br'),text:'',br:true});continue}
+    const gap = token.match(/^___([.?!,]?)$/);
+    if (gap) {out.push({id:'gap',text:'',gap:true});if(gap[1])out.push({id:id('end'),text:gap[1]});continue}
+    const m = token.match(/^(.+?)(?:\/(\w+))?(?:#([\w’]+))?([.?!,:]?)$/) ;
+    const text = m[1].replace(/_/g,' '); const lower = text.toLowerCase();
+    const role = (m[2]                        ) || (auto ? autoRoles[lower] : undefined);
+    out.push({id:m[3] || id(role&&!m[2]&&auto&&autoRoles[lower] ? role : lower.replace(/[’\s]/g,'')), text, role, join:text.startsWith('’')});
+    if (m[4]) out.push({id:m[4]===','?id('comma'):m[4]===':'?id('colon'):id('end'), text:m[4]});
+  }
+  // "belongs to her." uses her as an object, not a possessive: keep it uncoloured.
+  return out.map((t,i)=>t.text.toLowerCase()==='her'&&!t.id.startsWith('her')&&/^[.?!,]$/.test(out[i+1]?.text||'')?{...t,role:undefined}:t);
+}
+const lessonLine = (q         , pattern       )=>q.prompt.split('\n').find(line=>pattern.test(line));
+const lastLine = (q         )=>q.prompt.split('\n').at(-1) ;
+const optionTiles = (choices         , auto=false)=>choices.map((c,i)=>({id:`option${i}`,text:c,role:auto?autoRoles[c.toLowerCase()]:undefined}));
+
+// The practice step always uses the question itself.
+function practiceFor(q         , caption       , auto=true, context        , pickRole            )                {
+  if (q.choices && lessonLine(q,/___/)) {
+    // Every line of the prompt: the second line often holds the clue (for example "No, he isn’t.").
+    const spec = q.prompt.split('\n').join(' | ');
+    return {mode:'gap',caption,tiles:lessonTiles(spec,auto),options:optionTiles(q.choices,auto),answer:q.answer,
+      after:lessonTiles(spec,auto).map(t=>t.gap?{id:'gap',text:q.answer,role:(auto&&autoRoles[q.answer.toLowerCase()])||pickRole||'mark'}:t)};
+  }
+  if (q.choices) {
+    const tiles = context ? lessonTiles(context,auto) : [];
+    return {mode:'pick',caption,tiles,options:optionTiles(q.choices),answer:q.answer,after:tiles,role:pickRole};
+  }
+  return {mode:'say',caption:'Your turn: say it aloud.',tiles:lessonTiles(context||lastLine(q),auto),options:[],answer:q.answer,after:lessonTiles(q.answer,auto)};
+}
+
+function lessonFor(q         )                  {
+  const p = q.prompt;
+  if (q.topic==='be'||q.topic==='origins') {
+    if (/negative:/i.test(p)&&/Make/.test(p)) return negativeLesson(q);
+    if (/question:|Ask a question|^___ \w+ from/.test(p)) return questionLesson(q);
+    if (/short form/.test(p)) return shortFormLesson(q);
+    if (/short answer|Answer positively|Answer negatively|Yes, ___|^Is ___/.test(p)) return shortAnswerLesson(q);
+    if (q.topic==='origins'&&/Where/.test(p+(q.choices||[]).join(' '))&&!/Where do you live|I ___/.test(p)) return whereLesson(q);
+    if (/___/.test(p)) return beLesson(q);
+    return undefined;
+  }
+  if (q.topic==='possessives') return possessiveLesson(q);
+  if (q.topic==='capitals') return capitalsLesson(q);
+  if (/Which word is an? (verb|noun|adjective)\?/.test(p)) return wordClassLesson(q);
+  if (/Which word is a pronoun|refer to/.test(p)) return pronounLesson(q);
+  if (q.topic==='words'&&/Friday/.test(p)) return daysLesson(q);
+  if (q.topic==='words'&&/grandparents|parents|son|daughter/.test(p+q.answer)) return familyLesson(q);
+  if (q.topic==='world'&&/continent|country/.test(p)&&!/picture/.test(p)) return continentLesson(q);
+  return undefined;
+}
+
+function beLesson(q         )        {
+  return {kind:'be',title:'Am, is or are?',steps:[
+    {caption:'I goes with am.',tiles:lessonTiles('I am happy.')},
+    {caption:'He, she and it go with is.',tiles:lessonTiles('She is happy.')},
+    {caption:'You, we and they go with are.',tiles:lessonTiles('They are happy.')}
+  ],practice:practiceFor(q,'Your turn: which word fits?'),
+  rule:'I → am · he, she, it → is · you, we, they → are',example:lessonTiles('We are happy.')};
+}
+function negativeLesson(q         )        {
+  const sentence = lastLine(q).replace(/^Make it negative: /,'');
+  const tiles = lessonTiles(sentence); const be = tiles.findIndex(t=>t.role==='be');
+  return {kind:'negative',title:'Saying no with not',steps:[
+    {caption:'A sentence with is.',tiles:lessonTiles('She is happy.')},
+    {caption:'Put not after am, is or are.',tiles:lessonTiles('She is not happy.')},
+    {caption:'Not comes after are.',tiles:lessonTiles('We are at school.'),then:lessonTiles('We are not at school.')}
+  ],practice:{mode:'place',caption:'Your turn: where does not go?',tiles,options:[{id:'not',text:'not',role:'not'}],answer:'not',slot:be+1,after:lessonTiles(q.answer)},
+  rule:'Put not after am / is / are.',example:lessonTiles('He is not at home.')};
+}
+function questionLesson(q         )        {
+  let practice               ;
+  const statement = lastLine(q).match(/^(?:Make a question: )?((?:I|He|She|It|You|We|They) (?:am|is|are) .+\.)$/)?.[1];
+  if (statement) {
+    const tiles = lessonTiles(statement); const be = tiles.find(t=>t.role==='be') ;
+    practice = {mode:'place',caption:'Your turn: where does '+be.text+' go?',tiles:tiles.filter(t=>t!==be),options:[be],answer:be.text,slot:0,after:lessonTiles(q.answer)};
+  } else practice = practiceFor(q,'Your turn: which word starts the question?');
+  return {kind:'question',title:'Making a question',steps:[
+    {caption:'A sentence.',tiles:lessonTiles('She is happy.')},
+    {caption:'Move is to the front. End with ?',tiles:lessonTiles('Is she happy?')},
+    {caption:'Are moves to the front too.',tiles:lessonTiles('They are at school.'),then:lessonTiles('Are they at school?')}
+  ],practice,rule:'Question: am / is / are goes first.',example:lessonTiles('Is he at home?')};
+}
+function shortAnswerLesson(q         )        {
+  const question = q.prompt.split('\n').find(line=>/\?$/.test(line)&&!/___/.test(line));
+  return {kind:'short-answer',title:'Short answers',steps:[
+    {caption:'A yes / no question.',tiles:lessonTiles('Is she happy?')},
+    {caption:'Yes + she + is.',tiles:lessonTiles('Yes, she is.')},
+    {caption:'No + they + are + not.',tiles:lessonTiles('Are they at school?'),then:lessonTiles('No, they are not.')}
+  ],practice:practiceFor(q,'Your turn: choose the answer.',true,question),
+  rule:'Yes, he is. · No, he isn’t.',example:lessonTiles('No, she isn’t.')};
+}
+function shortFormLesson(q         )        {
+  const words = q.prompt.match(/means “([^”]+)”/)?.[1]||'I am';
+  return {kind:'short-form',title:'Short forms',steps:[
+    {caption:'Two words.',tiles:lessonTiles('I am')},
+    {caption:'They join. ’ shows the missing letter.',tiles:lessonTiles('I ’m/be#be')},
+    {caption:'They are → they’re.',tiles:lessonTiles('They are'),then:lessonTiles('They ’re/be#be')}
+  ],practice:practiceFor(q,'Your turn: choose the short form.',true,words),
+  rule:'I am → I’m · he is → he’s · they are → they’re',example:lessonTiles('She ’s/be#be')};
+}
+function whereLesson(q         )        {
+  const question = q.prompt.split('\n').find(line=>/^Where .+\?$/.test(line));
+  return {kind:'where',title:'Where … from?',steps:[
+    {caption:'A place.',tiles:lessonTiles('He is from Spain/mark#place.')},
+    {caption:'Ask about the place with Where. Is goes before he.',tiles:lessonTiles('Where/q#place is he from?')},
+    {caption:'The same with are.',tiles:lessonTiles('They are from Brazil/mark#place.'),then:lessonTiles('Where/q#place are they from?')}
+  ],practice:practiceFor(q,'Your turn.',true,question),
+  rule:'Where + am / is / are + person + from?',example:lessonTiles('Where are you from?')};
+}
+function possessiveLesson(q         )        {
+  const owner = q.prompt.match(/goes with “([^”]+)”/)?.[1];
+  const practice = owner ? {...practiceFor(q,'Your turn: which word shows belonging?'),mode:'gap'         ,tiles:lessonTiles(`${owner} → ___`),options:optionTiles(q.choices ,true),after:lessonTiles(`${owner} → ${q.answer}`)}
+    : practiceFor(q,'Your turn: which word fits?',true,/Correct the sentence/.test(q.prompt)?lastLine(q):undefined);
+  return {kind:'possessive',title:'My, your, his, her…',steps:[
+    {caption:'The bag belongs to me.',tiles:lessonTiles('The bag belongs to me/who#me.')},
+    {caption:'me → my. My goes before the thing.',tiles:lessonTiles('This is my#me bag.')},
+    {caption:'him → his.',tiles:lessonTiles('The ball belongs to him/who#him.'),then:lessonTiles('This is his#him ball.')}
+  ],practice,rule:'I → my · you → your · he → his · she → her · it → its · we → our · they → their',example:lessonTiles('This is our house.')};
+}
+function capitalTiles(sentence       )              {
+  // Changed letters become capitals in place: the tile id stays the lower-case word.
+  return lessonTiles(sentence,false).map(t=>t.text!==t.text.toLowerCase()&&!/^[.?!,]$/.test(t.text)?{...t,role:'cap'         }:t);
+}
+function capitalsLesson(q         )        {
+  const wrong = /\n/.test(q.prompt) ? lastLine(q) : undefined;
+  let practice               ;
+  if (wrong) practice = {mode:'say',caption:'Your turn: which letters need capitals?',tiles:lessonTiles(wrong,false),options:[],answer:q.answer,after:capitalTiles(q.answer)};
+  else practice = practiceFor(q,'Your turn: which sentence is correct?',false);
+  return {kind:'capitals',title:'Capital letters',steps:[
+    {caption:'Look at the first letters.',tiles:lessonTiles('my friend is omar.',false)},
+    {caption:'Capitals: the first word and names.',tiles:capitalTiles('My friend is Omar.')},
+    {caption:'Capitals: I and days of the week.',tiles:lessonTiles('i play on friday.',false),then:capitalTiles('I play on Friday.')}
+  ],practice,rule:'Capitals: the first word, I, names, places, days and months.',example:capitalTiles('Sara is from Japan.')};
+}
+function wordClassLesson(q         )        {
+  const kind = q.prompt.match(/(verb|noun|adjective)/) [1];
+  const role            = kind==='verb'?'verb':kind==='noun'?'noun':'adj';
+  return {kind:'word-class',title:'Nouns, verbs and adjectives',steps:[
+    {caption:'Every word has a job.',tiles:lessonTiles('Molly likes soft noses.',false)},
+    {caption:'Noun: a person, place or thing. Verb: an action. Adjective: describes.',tiles:lessonTiles('Molly/noun likes/verb soft/adj noses/noun.',false)},
+    {caption:'Try another sentence.',tiles:lessonTiles('We help our parents.',false),then:lessonTiles('We help/verb our parents/noun.',false)}
+  ],practice:practiceFor(q,`Your turn: which word is ${kind==='adjective'?'an':'a'} ${kind}?`,false,undefined,role),
+  rule:'Noun: a thing · Verb: an action · Adjective: describes',example:lessonTiles('Parrots/noun are friendly/adj.',false)};
+}
+function pronounLesson(q         )        {
+  const quoted = q.prompt.match(/in “([^”]+)”/)?.[1];
+  return {kind:'pronoun',title:'Pronouns point back',steps:[
+    {caption:'A noun.',tiles:lessonTiles('Giraffes/noun#g are cool.')},
+    {caption:'They replaces giraffes.',tiles:lessonTiles('They/who#g are cool.')},
+    {caption:'She replaces Molly.',tiles:lessonTiles('Molly/noun#m is nine.'),then:lessonTiles('She/who#m is nine.')}
+  ],practice:practiceFor(q,'Your turn: what does it point back to?',true,quoted),
+  rule:'A pronoun (he, she, it, they) replaces a noun.',example:lessonTiles('Giraffes are tall. | They are cool.')};
+}
+function daysLesson(q         )        {
+  return {kind:'days',title:'Days of the week',steps:[
+    {caption:'Seven days.',tiles:lessonTiles('Friday Monday Sunday Wednesday Tuesday Saturday Thursday',false)},
+    {caption:'In order. Each day starts with a capital.',tiles:lessonTiles('Monday Tuesday Wednesday Thursday Friday Saturday Sunday',false)},
+    {caption:'Which day comes next?',tiles:lessonTiles('Monday → ___ → Wednesday',false),then:lessonTiles('Monday → Tuesday/mark#gap → Wednesday',false)}
+  ],practice:practiceFor(q,'Your turn.',false,'Friday/mark'),
+  rule:'Seven days in order. Each starts with a capital letter.',example:lessonTiles('Monday Tuesday Wednesday Thursday Friday Saturday Sunday',false)};
+}
+function familyLesson(q         )        {
+  const word = q.prompt.match(/“([^”]+)”/)?.[1];
+  return {kind:'family',title:'Family words',steps:[
+    {caption:'Family words.',tiles:lessonTiles('son grandparents daughter parents',false)},
+    {caption:'Grandparents → parents → children.',tiles:lessonTiles('grandparents/mark | parents/noun | son daughter',false)},
+    {caption:'Mum and dad are your parents.',tiles:lessonTiles('mum + dad = ___',false),then:lessonTiles('mum + dad = parents/noun#gap',false)}
+  ],practice:practiceFor(q,'Your turn.',false,word?`${word}/mark`:undefined),
+  rule:'grandparents → parents → son (boy) · daughter (girl)',example:lessonTiles('grandparents | parents | son daughter',false)};
+}
+function continentLesson(q         )        {
+  const country = q.prompt.match(/matches (.+)\?/)?.[1];
+  return {kind:'continents',title:'Continents and countries',steps:[
+    {caption:'Continents and countries.',tiles:lessonTiles('Japan Europe Brazil Asia Poland South_America',false)},
+    {caption:'A continent is very big. It has many countries.',tiles:lessonTiles('Asia/mark: Japan | Europe/mark: Poland | South_America/mark: Brazil',false)},
+    {caption:'Jordan is in Asia too.',tiles:lessonTiles('Jordan → ___',false),then:lessonTiles('Jordan → Asia/mark#gap',false)}
+  ],practice:practiceFor(q,'Your turn.',false,country?country.replace(/ /g,'_')+'/noun':undefined),
+  rule:'Continent → many countries. Asia: Japan, Jordan · Europe: Poland',example:lessonTiles('Asia/mark: Japan Jordan',false)};
+}
+
 
 const $ =                                    (id       ) => document.getElementById(id)     ;
 const storageKey='laith-english-studio-v1';
@@ -411,7 +609,7 @@ function render(){
   $('topic-name').textContent=saved.mode==='mixed'?'Mixed practice':saved.mode==='revisit'?'Practise again':topics.find(t=>t.id===q.topic) .title;
   $('position').textContent=`${index+1} / ${queue.length}`;
   $('origin').textContent=q.extra?'Extra practice':'Worksheet practice';$('question').textContent=q.prompt;$('explanation').textContent=q.explanation;$                    ('explanation-panel').open=false;
-  $('reading-area').hidden=!q.excerpt;$('excerpt').textContent=q.excerpt||'';$('full-passage').hidden=!q.story;
+  $('reading-area').hidden=!q.excerpt;$('excerpt').textContent=q.excerpt||'';$('full-passage').hidden=!q.story;$('lesson-open').hidden=!lessonFor(q);
   $('choices').replaceChildren();$('choices').dataset.count=String(q.choices?.length||0);document.body.classList.toggle('reading-question',!!q.excerpt);$('spoken').hidden=!!q.choices;
   q.choices?.forEach((answer,i)=>{const btn=document.createElement('button');btn.className='choice';const n=document.createElement('span');n.className='number';n.textContent=String(i+1);n.setAttribute('aria-hidden','true');const label=document.createElement('span');label.textContent=answer;btn.append(n,label);btn.addEventListener('click',()=>choose(answer));$('choices').append(btn)});
   $('feedback').hidden=true;$('feedback').textContent='';$                   ('hint').disabled=false;$                   ('reveal').disabled=false;
@@ -455,7 +653,7 @@ $('full-passage').onclick=()=>{const story=current().story;if(story){closeTools(
 $('source-photo').onclick=()=>{closeTools();const img=$                  ('photo');$('photo-note').textContent='Printed source for reference. Handwritten answers may contain mistakes.';img.hidden=false;img.onerror=()=>{img.hidden=true;$('photo-note').textContent='This photo is unavailable.'};img.src=current().photo;$                   ('photo-dialog').showModal()};
 document.querySelectorAll                   ('[data-close]').forEach(btn=>btn.onclick=()=>btn.closest('dialog') .close());
 $('tools-reset').onclick=()=>{$('tools-reset-confirm').hidden=false;$('tools-reset-confirm').scrollIntoView({block:'nearest'})};$('tools-cancel-reset').onclick=()=>{$('tools-reset-confirm').hidden=true};$('tools-confirm-reset').onclick=()=>{resetProgress();closeTools()};
-document.addEventListener('keydown',e=>{if(document.querySelector('dialog[open]'))return;const target=e.target               ;if(['INPUT','TEXTAREA','SELECT'].includes(target.tagName)||e.ctrlKey||e.altKey||e.metaKey)return;if(e.key.toLowerCase()==='t'){e.preventDefault();openTools()}else if(e.key==='ArrowRight'){e.preventDefault();next()}else if(e.key==='ArrowLeft'&&index>0){e.preventDefault();index--;render()}else if(e.key.toLowerCase()==='h'){e.preventDefault();hint()}else if(e.key===' '&&target.tagName!=='BUTTON'&&target.tagName!=='A'){e.preventDefault();reveal()}else if(/^[1-4]$/.test(e.key)){const answer=current().choices?.[Number(e.key)-1];if(answer){e.preventDefault();choose(answer)}}});
+document.addEventListener('keydown',e=>{if(document.querySelector('dialog[open]')||document.body.classList.contains('lesson-open'))return;const target=e.target               ;if(['INPUT','TEXTAREA','SELECT'].includes(target.tagName)||e.ctrlKey||e.altKey||e.metaKey)return;if(e.key.toLowerCase()==='t'){e.preventDefault();openTools()}else if(e.key==='ArrowRight'){e.preventDefault();next()}else if(e.key==='ArrowLeft'&&index>0){e.preventDefault();index--;render()}else if(e.key.toLowerCase()==='h'){e.preventDefault();hint()}else if(e.key===' '&&target.tagName!=='BUTTON'&&target.tagName!=='A'){e.preventDefault();reveal()}else if(/^[1-4]$/.test(e.key)){const answer=current().choices?.[Number(e.key)-1];if(answer){e.preventDefault();choose(answer)}}});
 // Warm the frequently used feedback images so screen-share feedback appears promptly.
 render();
 
@@ -544,11 +742,126 @@ document.querySelectorAll                   ('.pen-color').forEach(button=>butto
 document.getElementById('pen-undo') .onclick = ()=>{strokes.pop();drawInk()};
 document.getElementById('pen-clear') .onclick = clearInk;
 document.addEventListener('questionchange',clearInk);
+document.addEventListener('lessonstep',clearInk);
 document.addEventListener('keydown',e=>{
   if(document.querySelector('dialog[open]')||e.ctrlKey||e.altKey||e.metaKey)return;
   if(['INPUT','TEXTAREA','SELECT'].includes((e.target               ).tagName))return;
   if(e.key.toLowerCase()==='p'){e.preventDefault();setPen(!document.body.classList.contains('drawing'))}
-  else if(e.key==='Escape'&&document.body.classList.contains('drawing'))setPen(false);
+  else if(e.key==='Escape'&&document.body.classList.contains('drawing')){e.preventDefault();setPen(false)}
 });
 addEventListener('resize',sizeInk);
 sizeInk();
+
+// Interactive lesson player. It is a full-screen layer under the pen, so the tutor can draw on any step.
+// Tiles keep their id between steps: a word that moves glides from its old place, a changed word fades into its new form.
+const lessonLayer = $('lesson'); const lessonStage = $('lesson-stage'); const lessonOptions = $('lesson-options'); const lessonCaption = $('lesson-caption');
+let activeLesson                  ; let lessonStep = 0; let lessonTimer                                         ;
+
+const lessonMotion = ()=>!matchMedia('(prefers-reduced-motion: reduce)').matches;
+const lessonViews = (l       )             =>[...l.steps.map(step=>({kind:'step',step})              ),...(l.practice?[{kind:'practice',practice:l.practice}              ]:[]),{kind:'summary'}];
+
+function tileElement(t           )             {
+  const el = document.createElement('span'); el.dataset.id = t.id; el.textContent = t.text;
+  el.className = ['lesson-tile', t.role&&`role-${t.role}`, t.gap&&'gap', t.br&&'br', t.join&&'join', /^[.?!,:]$/.test(t.text)&&'punct'].filter(Boolean).join(' ');
+  return el;
+}
+function placeTiles(tiles             , from = new Map                ()) {
+  const old = new Map                                    ();
+  lessonStage.querySelectorAll             ('[data-id]').forEach(el=>old.set(el.dataset.id ,{rect:el.getBoundingClientRect(),text:el.textContent }));
+  from.forEach((rect,id)=>old.set(id,{rect,text:''}));
+  lessonStage.replaceChildren(...tiles.map(tileElement));
+  if (!lessonMotion()) return;
+  lessonStage.querySelectorAll             ('[data-id]').forEach(el=>{
+    const before = old.get(el.dataset.id ); const now = el.getBoundingClientRect();
+    if (!before) { el.animate([{opacity:0,transform:'translateY(-18px)'},{opacity:1,transform:'none'}],{duration:500,easing:'ease-out'}); return; }
+    const dx = before.rect.left-now.left, dy = before.rect.top-now.top, changed = before.text!==el.textContent;
+    if (dx||dy||changed) el.animate([{transform:`translate(${dx}px,${dy}px)`,opacity:changed?0.35:1},{transform:'none',opacity:1}],{duration:750,easing:'cubic-bezier(.22,.61,.36,1)'});
+  });
+}
+function wobble(el            ) {
+  if (lessonMotion()) el.animate([{transform:'translateX(0)'},{transform:'translateX(-8px)'},{transform:'translateX(8px)'},{transform:'translateX(0)'}],{duration:320});
+}
+function optionButton(t           , onPick                                 ) {
+  const button = document.createElement('button'); button.className = 'lesson-option'+(t.role?` role-${t.role}`:''); button.textContent = t.text;
+  button.onclick = ()=>onPick(button); return button;
+}
+function practiceSolved() { lessonCaption.classList.add('done'); }
+
+function showPractice(p               ) {
+  lessonCaption.textContent = p.caption;
+  placeTiles(p.tiles);
+  if (p.mode==='gap'||p.mode==='pick') {
+    lessonOptions.replaceChildren(...p.options.map(o=>optionButton(o,button=>{
+      if (lessonCaption.classList.contains('done')) return;
+      if (o.text!==p.answer) { wobble(button); return; }
+      if (p.mode==='gap') { const rect = button.getBoundingClientRect(); lessonOptions.replaceChildren(); placeTiles(p.after,new Map([['gap',rect]])); }
+      else { button.classList.add('picked',`role-${p.role||'mark'}`); lessonOptions.querySelectorAll('button').forEach(b=>{if(b!==button)b.classList.add('faded')}); }
+      practiceSolved();
+    })));
+  } else if (p.mode==='place') {
+    const lifted = p.options[0];
+    const tileButton = optionButton(lifted,()=>{}); tileButton.classList.add('lifted'); tileButton.tabIndex = -1;
+    lessonOptions.replaceChildren(tileButton);
+    const tiles = Array.from(lessonStage.children);
+    tiles.concat([null                      ]).forEach((tile,i)=>{
+      const slot = document.createElement('button'); slot.className = 'lesson-slot'; slot.setAttribute('aria-label',`Put ${lifted.text} here`);
+      slot.onclick = ()=>{
+        if (i!==p.slot) { wobble(slot); return; }
+        const rect = tileButton.getBoundingClientRect(); lessonOptions.replaceChildren();
+        placeTiles(p.after,new Map([[lifted.id,rect]])); practiceSolved();
+      };
+      lessonStage.insertBefore(slot, tile);
+    });
+  } else {
+    const show = document.createElement('button'); show.className = 'lesson-option'; show.textContent = 'Show answer';
+    show.onclick = ()=>{ lessonOptions.replaceChildren(); placeTiles(p.after); practiceSolved(); };
+    lessonOptions.replaceChildren(show);
+  }
+}
+function showLessonStep() {
+  if (lessonTimer!==undefined) clearTimeout(lessonTimer); lessonTimer = undefined;
+  const lesson = activeLesson ; const views = lessonViews(lesson); const view = views[lessonStep];
+  document.dispatchEvent(new Event('lessonstep'));
+  $('lesson-dots').replaceChildren(...views.map((_,i)=>{const dot=document.createElement('span');if(i===lessonStep)dot.className='on';return dot}));
+  $                   ('lesson-prev').disabled = lessonStep===0;
+  $('lesson-next').textContent = lessonStep===views.length-1 ? '✓' : '→';
+  $('lesson-next').setAttribute('aria-label', lessonStep===views.length-1 ? 'Finish lesson' : 'Next step');
+  lessonLayer.dataset.view = view.kind; lessonCaption.classList.remove('done'); lessonOptions.replaceChildren();
+  if (view.kind==='step') {
+    lessonCaption.textContent = view.step.caption; placeTiles(view.step.tiles);
+    const then = view.step.then;
+    if (then) lessonTimer = setTimeout(()=>{lessonTimer=undefined;placeTiles(then)}, lessonMotion()?1100:0);
+  } else if (view.kind==='practice') showPractice(view.practice);
+  else { lessonCaption.textContent = lesson.rule; placeTiles(lesson.example); }
+}
+function lessonGo(step       ) {
+  if (!activeLesson) return;
+  const next = lessonStep+step;
+  if (next>=lessonViews(activeLesson).length) { closeLesson(); return; }
+  if (next<0) return;
+  lessonStep = next; showLessonStep();
+}
+function openLesson() {
+  const lesson = lessonFor(current()); if (!lesson) return;
+  closeTools();
+  // Like a hint, a lesson opened before answering counts as support and schedules a later review.
+  if (!revealed&&selected!==current().answer) track('concept');
+  activeLesson = lesson; lessonStep = 0; $('lesson-title').textContent = lesson.title;
+  lessonLayer.hidden = false; document.body.classList.add('lesson-open');
+  showLessonStep(); $('lesson-next').focus();
+}
+function closeLesson() {
+  if (lessonTimer!==undefined) clearTimeout(lessonTimer); lessonTimer = undefined;
+  activeLesson = undefined; lessonLayer.hidden = true; document.body.classList.remove('lesson-open');
+  document.dispatchEvent(new Event('lessonstep'));
+}
+$('lesson-open').onclick = openLesson;
+$('lesson-close').onclick = closeLesson;
+$('lesson-prev').onclick = ()=>lessonGo(-1);
+$('lesson-next').onclick = ()=>lessonGo(1);
+document.addEventListener('keydown',e=>{
+  if (!activeLesson||e.defaultPrevented||document.querySelector('dialog[open]')) return;
+  if (e.key==='ArrowRight') {e.preventDefault();lessonGo(1)}
+  else if (e.key==='ArrowLeft') {e.preventDefault();lessonGo(-1)}
+  else if (e.key==='Escape') {e.preventDefault();closeLesson()}
+});

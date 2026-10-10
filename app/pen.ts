@@ -53,11 +53,12 @@ document.querySelectorAll<HTMLButtonElement>('.pen-color').forEach(button=>butto
 document.getElementById('pen-undo')!.onclick = ()=>{strokes.pop();drawInk()};
 document.getElementById('pen-clear')!.onclick = clearInk;
 document.addEventListener('questionchange',clearInk);
+document.addEventListener('lessonstep',clearInk);
 document.addEventListener('keydown',e=>{
   if(document.querySelector('dialog[open]')||e.ctrlKey||e.altKey||e.metaKey)return;
   if(['INPUT','TEXTAREA','SELECT'].includes((e.target as HTMLElement).tagName))return;
   if(e.key.toLowerCase()==='p'){e.preventDefault();setPen(!document.body.classList.contains('drawing'))}
-  else if(e.key==='Escape'&&document.body.classList.contains('drawing'))setPen(false);
+  else if(e.key==='Escape'&&document.body.classList.contains('drawing')){e.preventDefault();setPen(false)}
 });
 addEventListener('resize',sizeInk);
 sizeInk();
