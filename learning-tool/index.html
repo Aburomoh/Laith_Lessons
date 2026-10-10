@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Laith’s English Studio</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <button id="tools" aria-label="Tutor tools" title="Tutor tools (T)">⋯</button>
+  <main>
+    <div class="stage">
+      <section class="question-panel" aria-labelledby="question">
+        <div id="reading-area" hidden><div id="excerpt"></div></div>
+        <div class="question-heading"><h1 id="question"></h1><button id="concept-info" aria-label="Show the concept" title="Show the concept">ⓘ</button></div>
+        <div id="choices" class="choices"></div>
+        <div id="feedback" role="status" aria-live="polite" hidden></div>
+      </section>
+      <aside class="tutor-panel" aria-label="Tutor reaction"><img id="tutor" alt="" src="../tutor poses/tutor_raised_eyebrows.png"></aside>
+    </div>
+    <footer class="controls"><button id="previous" aria-label="Previous question" title="Previous question">←</button><button id="reveal">Answer</button><button id="next" aria-label="Next question" title="Next question">→</button></footer>
+  </main>
+  <dialog id="concept-dialog" aria-labelledby="concept-title"><div class="dialog-heading"><h2 id="concept-title"></h2><button data-close aria-label="Close concept">×</button></div><img id="concept-picture" alt="" hidden><div id="concept-words" aria-live="off"></div><p id="concept-caption"></p><button id="concept-replay">Replay</button></dialog>
+  <dialog id="tools-dialog"><div class="dialog-heading"><h2>Tutor tools</h2><button data-close aria-label="Close tutor tools">×</button></div>
+    <p><strong id="topic-name"></strong> · <span id="position"></span></p>
+    <div class="tool-buttons"><button id="topics">Topics</button><button id="hint">Hint</button><button id="size">Larger text</button><button id="fullscreen">Full screen</button><button id="poses">Tutor expression</button><button id="help">Guide</button><button id="recap">Lesson recap</button></div>
+    <div id="spoken" hidden><p>Mark Laith’s spoken answer:</p><button id="oral-correct">✓ Correct</button><button id="oral-retry">↻ Try again</button></div>
+    <p id="coaching"></p><details id="explanation-panel"><summary>Teaching explanation (counts as support)</summary><p id="explanation"></p></details><p><span id="origin"></span> · <span id="source"></span></p><div class="tool-buttons"><button id="source-photo">Source photo</button><button id="full-passage">Full story</button></div>
+    <p id="session-note"></p>
+  </dialog>
+  <dialog id="topic-dialog"><div class="dialog-heading"><div><span class="eyebrow">PLAN YOUR LESSON</span><h2>What shall we practise?</h2></div><button data-close aria-label="Close topics">×</button></div><div id="topic-grid"></div><div class="review-actions"><label>Round <select id="round-size"><option value="5">5 questions</option><option value="10" selected>10 questions</option><option value="15">15 questions</option></select></label><button id="mixed">Mixed practice</button><button id="revisit">Practise again <span id="retry-count">0</span></button></div><p id="review-note" class="dialog-note"></p><p class="dialog-note">Based on the 13 selected exam photos. Extra practice uses the same concepts and simple vocabulary.</p><button id="reset" class="text-button">Reset saved progress</button><div id="reset-confirm" hidden><p>Clear saved progress and start again?</p><button id="confirm-reset">Clear progress</button><button id="cancel-reset">Keep progress</button></div></dialog>
+  <dialog id="help-dialog"><div class="dialog-heading"><h2>Your screen-share lesson</h2><button data-close aria-label="Close guide">×</button></div><p>Share this browser window in Teams. Laith answers aloud; you click the choices or mark his spoken response.</p><ol><li>Choose a topic. Read one question together.</li><li>Give thinking time. Use a hint if needed.</li><li>Click his answer, or mark an oral response.</li><li>Reveal the answer and discuss it. Advance when ready.</li></ol><p><strong>Keyboard:</strong> T opens tutor tools · 1–4 select choices · H gives a hint · Space reveals · ← / → move between questions · Esc closes a panel.</p><p><strong>Larger text</strong> in Tutor tools enlarges text. Full screen gives more teaching space. Progress is saved in this browser when storage is available; opening the tool elsewhere starts a separate record.</p><p>“Practise again” keeps missed, hinted, explained and revealed items until an unaided correct response at least 24 hours after their last practice. Immediate correction is useful, but is not delayed recall. Reopening or starting a new lesson does not bypass the delay. Open writing accepts many answers: model sentences are examples, not the only correct wording.</p><p>Tutor expressions respond to the task. Open Tutor tools to choose any available pose.</p><p>Book audio is not included. Ask Laith to read phonics words aloud and identify their sound or spelling before selecting. The tutor can model them if needed; record this using Hint. Spotting letters alone does not demonstrate reading. Original wording that is ambiguous is explained in feedback.</p></dialog>
+  <dialog id="recap-dialog"><div class="dialog-heading"><h2>Lesson recap</h2><button data-close aria-label="Close recap">×</button></div><p id="recap-summary"></p><p id="recap-events"></p><p>For the tutor: review these questions later. A correct response after help is useful practice, not yet delayed recall.</p><ul id="recap-items"></ul><button id="recap-topics">Continue lesson</button><button id="new-lesson">Start new lesson recap</button></dialog>
+  <dialog id="passage-dialog"><div class="dialog-heading"><h2 id="passage-title"></h2><button data-close aria-label="Close story">×</button></div><div id="passage-body"></div></dialog>
+  <dialog id="pose-dialog"><div class="dialog-heading"><h2>Choose a tutor expression</h2><button data-close aria-label="Close poses">×</button></div><div id="pose-grid"></div></dialog>
+  <dialog id="photo-dialog"><div class="dialog-heading"><h2>Original source photo</h2><button data-close aria-label="Close photo">×</button></div><p id="photo-note">Printed source for reference.</p><img id="photo" alt="Original photographed study page"></dialog>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "laith-english-studio",
+  "private": true,
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "node serve.mjs",
+    "typecheck": "tsc --project tsconfig.json",
+    "test": "node tests.mjs",
+    "test:browser": "node tests.mjs --browser",
+    "check": "npm run typecheck && npm run build && npm test",
+    "test:mobile": "node mobile-tests.mjs",
+    "build:pages": "node package-pages.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.58.2",
+    "typescript": "5.9.3"
+  }
+}
