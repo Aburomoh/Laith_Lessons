@@ -1,9 +1,13 @@
 node_modules/
 learning-tool/preview-*.png
 *.jpeg
+!/WhatsApp Image 2026-10-10 at *.jpeg
 STUDY_MAP.md
 tutor poses/*.md
 tutor poses/index.html
 *.log
 
 pages-dist/
+github-ready/
+
+tutor poses/tutor_curious.png

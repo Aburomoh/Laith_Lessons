@@ -2,6 +2,8 @@
 
 ## Unreleased — Concept explanations, delayed retrieval and CI
 
+- Include all 28 original page photos in the GitHub-ready source files with explicit owner approval.
+
 - Prepare a runtime-only GitHub Pages package and deployment gated by CI.
 - Adapt phone/tablet layouts with safe-area spacing, touch targets and scrollable dialogs.
 - Add packaged-site tests for iPhone/iPad WebKit and Android Chromium emulation.

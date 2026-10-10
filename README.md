@@ -2,9 +2,11 @@
 
 A quiet, offline English practice tool for an eight-year-old, designed for live tutoring over Microsoft Teams screen sharing.
 
-**Website:** [Laith’s English Studio](https://aburomoh.github.io/Laith_Lessons/) — planned GitHub Pages address; publication is pending, so this link is not yet live.
+**Website:** [https://aburomoh.github.io/Laith_Lessons/](https://aburomoh.github.io/Laith_Lessons/) — open it on a computer, iPhone, iPad or Android device.
 
 ## Start
+
+For uploading or pushing this project yourself, see [the GitHub handoff guide](docs/GITHUB_UPLOAD.md).
 
 Download the repository and open `learning-tool/index.html` in your browser. On Windows, double-click `Open English Studio.cmd`.
 
@@ -23,6 +25,6 @@ The interface adapts to iPhone, iPad and Android screen sizes, with touch contro
 - Short feedback, expressive tutor poses, mixed practice and a revisit queue.
 - Local browser progress and TypeScript/CSS source.
 
-Original photographed worksheets are kept locally and excluded from this repository. The app works without them; the source-photo panel explains when a photo is unavailable. The tutor PNG assets are included.
+All 28 original page photographs are approved for the repository by the owner, but have not been uploaded yet; add them at the repository root from the original folder. The repository holds 18 tutor portraits and 3 concept illustrations. Keep the photographs at the repository root so the local source-photo viewer can find them. The lightweight GitHub Pages package excludes the original photographs; the app works without them.
 
 See [the teaching and development guide](learning-tool/README.md) for keyboard shortcuts, source notes and build instructions.

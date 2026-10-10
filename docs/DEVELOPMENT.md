@@ -17,7 +17,7 @@ npm run test:mobile
 
 `check` performs strict TypeScript checking, regenerates `app.js`, and validates content and source mappings. Browser tests use local files: no preview server, external worksheet images or hosted services are required. CI installs Chromium and its system dependencies and uploads screenshots as review artifacts. It also rejects a stale generated `app.js`.
 
-Runtime remains dependency-free; TypeScript and Playwright are development dependencies. Dependency versions are exact and locked. Do not commit node_modules, private worksheet photographs, local progress or preview screenshots.
+Runtime remains dependency-free; TypeScript and Playwright are development dependencies. Dependency versions are exact and locked. Do not commit node_modules, local progress or preview screenshots. All 28 original page photographs are explicitly approved for the repository and retained at its root; the discarded tutor portrait remains excluded.
 
 Record meaningful changes in CHANGELOG.md. Record motives, teaching decisions and observed difficulties in docs/DECISIONS.md. Update the PR description to reflect the final implementation. Do not claim remote CI passed until its checks report success.
 
