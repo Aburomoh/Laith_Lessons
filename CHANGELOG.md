@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-10 — Faster pictures
+
+- Convert tutor pictures and illustrations to web-sized WebP: 37 MB down to under 1 MB.
+- Preload every tutor expression so reactions change the moment an answer is picked.
+- Remove the raised-eyebrows expression; the friendly amused expression replaces it on the opening screen and in the waiting rotation.
+
 ## 2026-10-10 — Larger tutor on phones
 
 - On phones the tutor fills the space below the answers (up to 300px tall, never below 90px), so it is much larger while the controls stay on screen.

@@ -27,7 +27,7 @@ The interface adapts to iPhone, iPad and Android screen sizes, with touch contro
 
 ```text
 app/                 The app: open app/index.html
-  assets/tutor/        18 tutor expressions
+  assets/tutor/        17 tutor expressions (WebP, about 40 KB each)
   assets/illustrations/ 3 concept pictures
 source-pages/        28 original page photos (page-01 … page-28), approved by the owner
 docs/                Teaching decisions, development guide, illustration notes

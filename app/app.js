@@ -209,9 +209,9 @@ oral('writing','writing','Say three sentences about your country without the sen
 
 const splitWords=(text       )=>text.trim().split(/\s+/);
 const illustrations = {
-  family: {src:'assets/illustrations/family.png',alt:'Two grandparents, two parents, a son and a daughter standing together.'},
-  giraffes: {src:'assets/illustrations/giraffes.png',alt:'Two giraffes with long necks and different spot patterns.'},
-  arrival: {src:'assets/illustrations/arrival.png',alt:'A bus has arrived at school. A child steps out onto the pavement.'}
+  family: {src:'assets/illustrations/family.webp',alt:'Two grandparents, two parents, a son and a daughter standing together.'},
+  giraffes: {src:'assets/illustrations/giraffes.webp',alt:'Two giraffes with long necks and different spot patterns.'},
+  arrival: {src:'assets/illustrations/arrival.webp',alt:'A bus has arrived at school. A child steps out onto the pavement.'}
 };
 function illustrationFor(q         )                                         {
   if(q.topic==='words'){
@@ -327,10 +327,13 @@ function track(event              ){const id=current().id;const r=recordPractice
 let queue            =saved.ids.length?saved.ids.map(id=>byId.get(id) ):questions.filter(q=>q.topic==='words');
 let index=saved.index;
 let revealed=false, selected                 , attempt=0, feedbackVisible=false;
-const poses                    = [['raised_eyebrows','Raised eyebrows'],['x_arms-softened','Wrong answer · gentle'],['x_arms','Wrong answer · firm'],['skeptical','Skeptical'],['confused','Confused'],['unsure','Unsure'],['concerned','Concerned'],['disappointed','Disappointed'],['frustrated','Frustrated'],['empathetic','Empathetic'],['reassuring','Reassuring'],['serious','Serious'],['caution','Caution'],['shock','Surprised'],['aha','Aha!'],['proud','Proud'],['excited','Excited'],['amused','Amused']];
+const poses                    = [['x_arms-softened','Wrong answer · gentle'],['x_arms','Wrong answer · firm'],['skeptical','Skeptical'],['confused','Confused'],['unsure','Unsure'],['concerned','Concerned'],['disappointed','Disappointed'],['frustrated','Frustrated'],['empathetic','Empathetic'],['reassuring','Reassuring'],['serious','Serious'],['caution','Caution'],['shock','Surprised'],['aha','Aha!'],['proud','Proud'],['excited','Excited'],['amused','Amused']];
 document.body.classList.toggle('large',saved.large);
 function persist(){saved.ids=queue.map(q=>q.id);saved.index=index;try{localStorage.setItem(storageKey,JSON.stringify(saved));}catch{storageAvailable=false}}
-function pose(name       ,message       ){const img=$                  ('tutor');img.src=`assets/tutor/${name}.png`;img.alt=`Tutor: ${poses.find(p=>p[0]===name)?.[1]||name}`;img.dataset.message=message;}
+const poseSrc=(name       )=>`assets/tutor/${name}.webp`;
+// Load and decode every pose up front and keep them referenced, so a reaction swaps instantly instead of waiting for the network.
+const poseCache=new Map(poses.map(([name])=>{const img=new Image();img.src=poseSrc(name);img.decode().catch(()=>{});return [name,img]         }));
+function pose(name       ,message       ){const img=$                  ('tutor');img.src=poseCache.get(name)?.src||poseSrc(name);img.alt=`Tutor: ${poses.find(p=>p[0]===name)?.[1]||name}`;img.dataset.message=message;}
 function current(){return queue[index]}
 function showFeedback(text       ,tone='info'){feedbackVisible=true;$('feedback').hidden=false;$('feedback').textContent=text;$('feedback').dataset.tone=tone;}
 function render(){
@@ -345,7 +348,7 @@ function render(){
   $                   ('oral-correct').disabled=false;$                   ('oral-retry').disabled=false;
   $                   ('previous').disabled=index===0;$('next').textContent=index===queue.length-1?'✓':'→';
   $('source').textContent=q.source;$('session-note').textContent=storageAvailable?'Laith answers aloud · Tutor controls the screen':'Progress unavailable · You can still teach';
-  pose(q.pose||(['raised_eyebrows','reassuring','serious','unsure'][index%4]),q.pose==='shock'?'That’s a surprising detail!':q.pose==='unsure'?'Let’s check this together.':'Take your time. Think it through.');
+  pose(q.pose||(['amused','reassuring','serious','unsure'][index%4]),q.pose==='shock'?'That’s a surprising detail!':q.pose==='unsure'?'Let’s check this together.':'Take your time. Think it through.');
   persist();
 }
 function paintChoices(){Array.from($('choices').children).forEach((el,i)=>{const answer=current().choices [i];el.classList.toggle('selected',answer===selected);el.classList.toggle('correct',(revealed||selected===current().answer)&&answer===current().answer);el.classList.toggle('wrong',answer===selected&&answer!==current().answer);(el                     ).disabled=revealed||selected===current().answer;});}
@@ -381,14 +384,13 @@ $('explanation-panel').addEventListener('toggle',()=>{if($                    ('
 $('help').onclick=()=>{closeTools();$                   ('help-dialog').showModal()};
 $('full-passage').onclick=()=>{const story=current().story;if(story){closeTools();$('passage-title').textContent=stories[story].title;$('passage-body').textContent=stories[story].text;$                   ('passage-dialog').showModal()}};
 $('source-photo').onclick=()=>{closeTools();const img=$                  ('photo');$('photo-note').textContent='Printed source for reference. Handwritten answers may contain mistakes.';img.hidden=false;img.onerror=()=>{img.hidden=true;$('photo-note').textContent='This photo is unavailable here. Original page photos are in the repository download, but not included in the lightweight website package.'};img.src=`../${current().photo}`;$                   ('photo-dialog').showModal()};
-for(const [name,label] of poses){const btn=document.createElement('button');const img=document.createElement('img');img.src=`assets/tutor/${name}.png`;img.alt='';img.loading='lazy';const text=document.createElement('span');text.textContent=label;btn.append(img,text);btn.onclick=()=>{const messages                      ={frustrated:'This problem feels tricky. Let’s break it down.',disappointed:'That attempt didn’t work. Let’s try another way.',confused:'Something doesn’t fit. Let’s check.',skeptical:'Does that answer fit the sentence?',shock:'Oh! Let’s look closely.',x_arms:'That answer doesn’t fit. Try again.','x_arms-softened':'Not quite. Let’s try again.',reassuring:'Take your time. We’ll work it out.',empathetic:'It’s okay to need another try.',proud:'You’re making progress!',excited:'A great discovery!',amused:'Let’s have some fun with this!',aha:'Now it makes sense!',caution:'Watch out for this detail.',serious:'Let’s focus on the rule.',concerned:'Let’s check where we got stuck.',unsure:'Let’s check the evidence together.'};pose(name,messages[name]||'What do you think?');$                   ('pose-dialog').close()};$('pose-grid').append(btn)}
+for(const [name,label] of poses){const btn=document.createElement('button');const img=document.createElement('img');img.src=poseSrc(name);img.alt='';const text=document.createElement('span');text.textContent=label;btn.append(img,text);btn.onclick=()=>{const messages                      ={frustrated:'This problem feels tricky. Let’s break it down.',disappointed:'That attempt didn’t work. Let’s try another way.',confused:'Something doesn’t fit. Let’s check.',skeptical:'Does that answer fit the sentence?',shock:'Oh! Let’s look closely.',x_arms:'That answer doesn’t fit. Try again.','x_arms-softened':'Not quite. Let’s try again.',reassuring:'Take your time. We’ll work it out.',empathetic:'It’s okay to need another try.',proud:'You’re making progress!',excited:'A great discovery!',amused:'Let’s have some fun with this!',aha:'Now it makes sense!',caution:'Watch out for this detail.',serious:'Let’s focus on the rule.',concerned:'Let’s check where we got stuck.',unsure:'Let’s check the evidence together.'};pose(name,messages[name]||'What do you think?');$                   ('pose-dialog').close()};$('pose-grid').append(btn)}
 $('poses').onclick=()=>{closeTools();$                   ('pose-dialog').showModal()};
 document.querySelectorAll                   ('[data-close]').forEach(btn=>btn.onclick=()=>btn.closest('dialog') .close());
 $('reset').onclick=()=>{$('reset-confirm').hidden=false};$('cancel-reset').onclick=()=>{$('reset-confirm').hidden=true};$('confirm-reset').onclick=resetProgress;
 $('tools-reset').onclick=()=>{$('tools-reset-confirm').hidden=false;$('tools-reset-confirm').scrollIntoView({block:'nearest'})};$('tools-cancel-reset').onclick=()=>{$('tools-reset-confirm').hidden=true};$('tools-confirm-reset').onclick=()=>{resetProgress();closeTools()};
 document.addEventListener('keydown',e=>{if(document.querySelector('dialog[open]'))return;const target=e.target               ;if(['INPUT','TEXTAREA','SELECT'].includes(target.tagName)||e.ctrlKey||e.altKey||e.metaKey)return;if(e.key.toLowerCase()==='t'){e.preventDefault();openTools()}else if(e.key==='ArrowRight'){e.preventDefault();next()}else if(e.key==='ArrowLeft'&&index>0){e.preventDefault();index--;render()}else if(e.key.toLowerCase()==='h'){e.preventDefault();hint()}else if(e.key===' '&&target.tagName!=='BUTTON'&&target.tagName!=='A'){e.preventDefault();reveal()}else if(/^[1-4]$/.test(e.key)){const answer=current().choices?.[Number(e.key)-1];if(answer){e.preventDefault();choose(answer)}}});
 // Warm the frequently used feedback images so screen-share feedback appears promptly.
-for(const name of ['x_arms-softened','aha','proud','concerned','reassuring','empathetic','excited']){const img=new Image();img.src=`assets/tutor/${name}.png`}
 render();
 
 let conceptTimer                                        ;

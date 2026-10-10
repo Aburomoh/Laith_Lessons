@@ -96,3 +96,9 @@ The user asked for a cleaner repository with clearer file names. The app folder 
 ## 2026-10-10 — Right/wrong count and reset in Tutor tools
 
 The user asked for a reset button and a box showing how many attempts Laith got right or wrong. The count sits at the top of Tutor tools, visible only to the tutor's menu, and counts every marked attempt, so a wrong first try followed by a correct second try shows one of each. Hints, concepts and reveals are support, not attempts, so they are not counted. The count persists in the browser with the other progress and resets with it. The existing reset in Topics was easy to miss, so Tutor tools gained its own, behind the same confirmation step.
+
+## 2026-10-10 — Faster pictures; raised eyebrows removed
+
+The user found the pictures slow to load and the tutor slow to react after an answer, sometimes not changing at all. Each tutor PNG was about 2 MB at 1086 × 1448 but displays at most about 340 px tall, so all tutor pictures are now 540 × 720 WebP (about 40 KB each) and the illustrations 1040 × 693 WebP. The app loads and decodes every expression at start-up and keeps them in memory, so a reaction never waits for the network; a browser test checks that the new reaction is already loaded when it appears.
+
+The user found the raised-eyebrows expression scary and asked for it to be removed completely. Its file and catalogue entry are gone. The friendly amused expression replaces it on the opening screen and in the rotation shown while Laith thinks. This supersedes the earlier choice of raised eyebrows as the replacement for the discarded curious portrait.

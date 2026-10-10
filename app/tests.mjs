@@ -9,7 +9,7 @@ const {questions,topics,sources}=data;
 const appSource=stripTypeScriptTypes(readFileSync(new URL('app.ts',import.meta.url),'utf8'));
 const poseDeclaration=appSource.match(/const poses[^=]*=([^;]+);/s)[0];
 const availablePoses=runInNewContext(poseDeclaration+'\nposes');
-for(const [name] of availablePoses)assert(existsSync(new URL(`assets/tutor/${name}.png`,import.meta.url)),`Missing pose ${name}`);
+for(const [name] of availablePoses)assert(existsSync(new URL(`assets/tutor/${name}.webp`,import.meta.url)),`Missing pose ${name}`);
 assert.equal(new Set(questions.map(q=>q.id)).size,questions.length,'Unique question IDs');
 assert.equal(Object.keys(sources).length,13,'All 13 selected source photos mapped');
 for(const [source,photo] of Object.values(sources)){assert(questions.some(q=>q.source===source),`Missing training: ${source}`);assert(questions.some(q=>q.photo===`source-pages/${photo}.jpeg`));}
@@ -103,7 +103,9 @@ await openTopics();await page.locator('#reset').click();await page.locator('#con
 // Right/wrong box counts every marked attempt; the tools reset clears it with the rest of the progress.
 const score=async()=>[await page.locator('#score-right').innerText(),await page.locator('#score-wrong').innerText()];
 await openTools();assert.deepEqual(await score(),['0','0']);await page.locator('#tools-dialog [data-close]').click();
-{const first=questions.find(q=>q.topic==='words'&&q.choices);await page.locator('#choices button').filter({hasNotText:first.answer}).first().click();await page.locator('#choices button').filter({hasText:first.answer}).click();}
+{const first=questions.find(q=>q.topic==='words'&&q.choices);await page.waitForFunction(()=>document.getElementById('tutor').complete);const before=await page.locator('#tutor').getAttribute('src');await page.locator('#choices button').filter({hasNotText:first.answer}).first().click();
+// The reaction must already be loaded when it appears, not fetched after the answer.
+const shown=await page.locator('#tutor').evaluate(img=>({src:img.getAttribute('src'),ready:img.complete&&img.naturalWidth>0}));assert.notEqual(shown.src,before);assert(shown.ready,'Tutor reaction not preloaded');await page.locator('#choices button').filter({hasText:first.answer}).click();}
 await openTools();assert.deepEqual(await score(),['1','1']);await page.locator('#tools-reset').click();assert(await page.locator('#tools-confirm-reset').isVisible());await page.locator('#tools-cancel-reset').click();assert.deepEqual(await score(),['1','1']);
 await page.locator('#tools-reset').click();await page.locator('#tools-confirm-reset').click();assert(!await page.locator('#tools-dialog').evaluate(d=>d.open));await page.reload();await openTools();assert.deepEqual(await score(),['0','0']);assert.equal(await page.locator('#position').innerText(),'1 / 19');await page.locator('#tools-dialog [data-close]').click();
 // Support survives reload; delayed recall clears only after a full gap.

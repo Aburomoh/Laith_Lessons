@@ -10,8 +10,8 @@ const copy=(path)=>{const destination=new URL(path,output);mkdirSync(new URL('./
 for(const file of ['index.html','app.js','styles.css'])copy('app/'+file);
 const app=stripTypeScriptTypes(readFileSync(new URL('app.ts',import.meta.url),'utf8'));
 const poses=runInNewContext(app.match(/const poses[^=]*=([^;]+);/s)[0]+'\nposes');
-for(const [name] of poses)copy(`app/assets/tutor/${name}.png`);
-for(const name of ['family','giraffes','arrival'])copy(`app/assets/illustrations/${name}.png`);
+for(const [name] of poses)copy(`app/assets/tutor/${name}.webp`);
+for(const name of ['family','giraffes','arrival'])copy(`app/assets/illustrations/${name}.webp`);
 writeFileSync(new URL('index.html',output),'<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0;url=./app/index.html"><title>Laith’s English Studio</title><a href="./app/index.html">Open English Studio</a></html>');
 writeFileSync(new URL('.nojekyll',output),'');
 console.log('Packaged runtime files in pages-dist; worksheet photographs and development files excluded.');

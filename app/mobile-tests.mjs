@@ -9,7 +9,7 @@ const {webkit,chromium,devices}=await import(process.env.PLAYWRIGHT_PATH?pathToF
 const questions=runInNewContext(stripTypeScriptTypes(readFileSync(new URL('questions.ts',import.meta.url),'utf8'))+'\nquestions');
 const root=new URL('../pages-dist/',import.meta.url);
 // Exercise the actual deployment package under a GitHub project subdirectory.
-const server=createServer(async(req,res)=>{try{const path=decodeURIComponent(new URL(req.url,'http://localhost').pathname);if(!path.startsWith('/Laith_Lessons/'))throw Error();const file=path.slice('/Laith_Lessons/'.length)||'index.html';if(file.includes('..'))throw Error();const data=await readFile(new URL(file,root));const ext=file.split('.').at(-1);res.writeHead(200,{'Content-Type':({html:'text/html',js:'text/javascript',css:'text/css',png:'image/png'})[ext]||'text/plain'});res.end(data)}catch{res.writeHead(404).end()}});
+const server=createServer(async(req,res)=>{try{const path=decodeURIComponent(new URL(req.url,'http://localhost').pathname);if(!path.startsWith('/Laith_Lessons/'))throw Error();const file=path.slice('/Laith_Lessons/'.length)||'index.html';if(file.includes('..'))throw Error();const data=await readFile(new URL(file,root));const ext=file.split('.').at(-1);res.writeHead(200,{'Content-Type':({html:'text/html',js:'text/javascript',css:'text/css',png:'image/png',webp:'image/webp'})[ext]||'text/plain'});res.end(data)}catch{res.writeHead(404).end()}});
 await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
 const url=`http://127.0.0.1:${server.address().port}/Laith_Lessons/`;
 try {
