@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-10 — Clearer controls
+
+- Disable Answer once the right choice is picked (spoken and writing questions keep it, so the example answer can still be shown).
+- Put a soft circle around the next arrow.
+
 ## 2026-10-10 — Gentle crossed-X more often
 
 - Show the gentle crossed-X on alternate questions for a second wrong pick and for a spoken answer marked Try again, as well as on every first wrong pick.
