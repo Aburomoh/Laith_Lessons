@@ -36,7 +36,7 @@ It was fun, all the way.`}
 const questions             = [];
 function add(topic         , sourceKey        , prompt        , choices                      , answer        , explanation        , hint        , extra=false, detail                    = {}) {
   const [source, suffix] = sources[sourceKey];
-  questions.push({id:`${topic}-${questions.filter(q=>q.topic===topic).length+1}`, topic, prompt, choices, answer, explanation, hint, source, photo:`source-pages/${suffix}.jpeg`, extra, ...detail});
+  questions.push({id:`${topic}-${questions.filter(q=>q.topic===topic).length+1}`, topic, prompt, choices, answer, explanation, hint, source, photo:`assets/pages/${suffix}.webp`, extra, ...detail});
 }
 function mc(topic         , source        , prompt        , choices          , answer        , explanation        , hint        , extra=false, detail                   ={}) {add(topic,source,prompt,choices,answer,explanation,hint,extra,detail)}
 function oral(topic         , source        , prompt        , answer        , explanation        , hint        , extra=false, detail                   ={}) {add(topic,source,prompt,undefined,answer,explanation,hint,extra,detail)}
@@ -337,6 +337,7 @@ function pose(name       ,message       ){const img=$                  ('tutor')
 function current(){return queue[index]}
 function showFeedback(text       ,tone='info'){feedbackVisible=true;$('feedback').hidden=false;$('feedback').textContent=text;$('feedback').dataset.tone=tone;}
 function render(){
+  document.dispatchEvent(new Event('questionchange'));
   const q=current();revealed=false;selected=undefined;attempt=0;feedbackVisible=false;
   $('topic-name').textContent=saved.mode==='mixed'?'Mixed practice':saved.mode==='revisit'?'Practise again':topics.find(t=>t.id===q.topic) .title;
   $('position').textContent=`${index+1} / ${queue.length}`;
@@ -382,7 +383,7 @@ $('fullscreen').onclick=async()=>{closeTools();try{if(document.fullscreenElement
 document.addEventListener('fullscreenchange',()=>{$('fullscreen').textContent=document.fullscreenElement?'Exit full screen':'Full screen'});
 $('explanation-panel').addEventListener('toggle',()=>{if($                    ('explanation-panel').open)track('concept')});
 $('full-passage').onclick=()=>{const story=current().story;if(story){closeTools();$('passage-title').textContent=stories[story].title;$('passage-body').textContent=stories[story].text;$                   ('passage-dialog').showModal()}};
-$('source-photo').onclick=()=>{closeTools();const img=$                  ('photo');$('photo-note').textContent='Printed source for reference. Handwritten answers may contain mistakes.';img.hidden=false;img.onerror=()=>{img.hidden=true;$('photo-note').textContent='This photo is unavailable here. Original page photos are in the repository download, but not included in the lightweight website package.'};img.src=`../${current().photo}`;$                   ('photo-dialog').showModal()};
+$('source-photo').onclick=()=>{closeTools();const img=$                  ('photo');$('photo-note').textContent='Printed source for reference. Handwritten answers may contain mistakes.';img.hidden=false;img.onerror=()=>{img.hidden=true;$('photo-note').textContent='This photo is unavailable.'};img.src=current().photo;$                   ('photo-dialog').showModal()};
 document.querySelectorAll                   ('[data-close]').forEach(btn=>btn.onclick=()=>btn.closest('dialog') .close());
 $('tools-reset').onclick=()=>{$('tools-reset-confirm').hidden=false;$('tools-reset-confirm').scrollIntoView({block:'nearest'})};$('tools-cancel-reset').onclick=()=>{$('tools-reset-confirm').hidden=true};$('tools-confirm-reset').onclick=()=>{resetProgress();closeTools()};
 document.addEventListener('keydown',e=>{if(document.querySelector('dialog[open]'))return;const target=e.target               ;if(['INPUT','TEXTAREA','SELECT'].includes(target.tagName)||e.ctrlKey||e.altKey||e.metaKey)return;if(e.key.toLowerCase()==='t'){e.preventDefault();openTools()}else if(e.key==='ArrowRight'){e.preventDefault();next()}else if(e.key==='ArrowLeft'&&index>0){e.preventDefault();index--;render()}else if(e.key.toLowerCase()==='h'){e.preventDefault();hint()}else if(e.key===' '&&target.tagName!=='BUTTON'&&target.tagName!=='A'){e.preventDefault();reveal()}else if(/^[1-4]$/.test(e.key)){const answer=current().choices?.[Number(e.key)-1];if(answer){e.preventDefault();choose(answer)}}});
@@ -418,3 +419,67 @@ function animateConcept(){
 $('concept-info').onclick=()=>{if(selected!==current().answer)track('concept');$                   ('concept-dialog').showModal();animateConcept()};
 $('concept-replay').onclick=animateConcept;
 $('concept-dialog').addEventListener('close',stopConcept);
+
+// Teacher pen: free drawing over the whole lesson screen for screen-shared lessons.
+// Ink stays visible when the pen is off, so the screen remains usable; it clears on a new question.
+
+const ink = document.getElementById('ink')                     ;
+const inkContext = ink.getContext('2d') ;
+const penButton = document.getElementById('pen')                     ;
+const penBar = document.getElementById('pen-bar') ;
+let strokes           = [];
+let activeStroke                  ;
+let penColor = '#d6452f';
+
+function sizeInk(){
+  const ratio = window.devicePixelRatio || 1;
+  ink.width = Math.round(innerWidth*ratio); ink.height = Math.round(innerHeight*ratio);
+  inkContext.setTransform(ratio,0,0,ratio,0,0);
+  drawInk();
+}
+function drawStroke(stroke       ){
+  const [first,...rest] = stroke.points;
+  inkContext.strokeStyle = stroke.color; inkContext.fillStyle = stroke.color;
+  inkContext.lineWidth = 5; inkContext.lineCap = 'round'; inkContext.lineJoin = 'round';
+  if(!rest.length){inkContext.beginPath();inkContext.arc(first[0],first[1],2.5,0,Math.PI*2);inkContext.fill();return}
+  inkContext.beginPath(); inkContext.moveTo(first[0],first[1]);
+  for(const [x,y] of rest) inkContext.lineTo(x,y);
+  inkContext.stroke();
+}
+function drawInk(){inkContext.clearRect(0,0,innerWidth,innerHeight);strokes.forEach(drawStroke)}
+function clearInk(){strokes=[];activeStroke=undefined;drawInk()}
+function setPen(on        ){
+  document.body.classList.toggle('drawing',on);
+  penButton.setAttribute('aria-pressed',String(on));
+  penBar.hidden = !on;
+}
+
+ink.addEventListener('pointerdown',e=>{
+  if(!document.body.classList.contains('drawing'))return;
+  ink.setPointerCapture(e.pointerId);
+  activeStroke = {color:penColor,points:[[e.clientX,e.clientY]]};
+  strokes.push(activeStroke); drawInk();
+});
+ink.addEventListener('pointermove',e=>{
+  if(!activeStroke)return;
+  for(const point of e.getCoalescedEvents?.() ?? [e]) activeStroke.points.push([point.clientX,point.clientY]);
+  drawInk();
+});
+for(const end of ['pointerup','pointercancel'])ink.addEventListener(end,()=>{activeStroke=undefined});
+
+penButton.onclick = ()=>setPen(!document.body.classList.contains('drawing'));
+document.querySelectorAll                   ('.pen-color').forEach(button=>button.onclick=()=>{
+  penColor = button.dataset.color ;
+  document.querySelectorAll('.pen-color').forEach(other=>other.setAttribute('aria-pressed',String(other===button)));
+});
+document.getElementById('pen-undo') .onclick = ()=>{strokes.pop();drawInk()};
+document.getElementById('pen-clear') .onclick = clearInk;
+document.addEventListener('questionchange',clearInk);
+document.addEventListener('keydown',e=>{
+  if(document.querySelector('dialog[open]')||e.ctrlKey||e.altKey||e.metaKey)return;
+  if(['INPUT','TEXTAREA','SELECT'].includes((e.target               ).tagName))return;
+  if(e.key.toLowerCase()==='p'){e.preventDefault();setPen(!document.body.classList.contains('drawing'))}
+  else if(e.key==='Escape'&&document.body.classList.contains('drawing'))setPen(false);
+});
+addEventListener('resize',sizeInk);
+sizeInk();

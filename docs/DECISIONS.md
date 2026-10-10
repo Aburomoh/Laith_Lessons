@@ -106,3 +106,9 @@ The user found the raised-eyebrows expression scary and asked for it to be remov
 ## 2026-10-10 — Simpler menu
 
 The user asked for a simpler ⋯ menu: the tutor knows how to use the platform, so tutor-directed guidance should go. The Guide dialog, the per-question coaching tips and the "Laith answers aloud" note were removed, and the storage note now appears only when progress cannot be saved. The Tutor expression picker was removed at the user's request; the tutor still reacts automatically. The menu is a vertical list. Mixed practice, with its 5/10/15 round size, is its own menu item instead of sitting inside Topics, which now holds only the lessons and Practise again. The reset in Topics duplicated the one in the menu and was removed.
+
+## 2026-10-10 — Page photos on the website; teacher pen
+
+The website showed "This photo is unavailable" because the Pages package deliberately left out the worksheet photos. The owner has since approved all 28 photos for the public repository and asked for the pages to be offered again at a much smaller size. The 13 photos the questions use now ship as 600 × 1067 WebP copies in `app/assets/pages` (about 37 KB each, 493 KB in total, 65% smaller); the readable worksheet text was checked visually. Full-size originals stay in `source-pages`.
+
+For online lessons the tutor wanted to draw freely over the screen. A pen at the top left turns a full-screen drawing layer on; ink stays visible when the pen is off but no longer blocks clicks, and it clears when the question changes so annotations never carry over to the wrong question. Three high-contrast colours, undo and clear keep it simple. Drawing sits above the lesson screen but below open menus and dialogs, which close before drawing anyway.

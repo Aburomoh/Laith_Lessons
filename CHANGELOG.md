@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-10 — Page photos online and a pen
+
+- Bring back Source photo on the website, using 600 px WebP copies of the 13 pages the questions use (about 37 KB each, 65% smaller than the originals).
+- Add a pen at the top left that draws over the whole screen, with three colours, undo and clear; P toggles it and a new question clears the ink.
+
 ## 2026-10-10 — Simpler menu
 
 - Turn the ⋯ menu into a short vertical list with plain labels.

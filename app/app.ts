@@ -30,6 +30,7 @@ function pose(name:string,message:string){const img=$<HTMLImageElement>('tutor')
 function current(){return queue[index]}
 function showFeedback(text:string,tone='info'){feedbackVisible=true;$('feedback').hidden=false;$('feedback').textContent=text;$('feedback').dataset.tone=tone;}
 function render(){
+  document.dispatchEvent(new Event('questionchange'));
   const q=current();revealed=false;selected=undefined;attempt=0;feedbackVisible=false;
   $('topic-name').textContent=saved.mode==='mixed'?'Mixed practice':saved.mode==='revisit'?'Practise again':topics.find(t=>t.id===q.topic)!.title;
   $('position').textContent=`${index+1} / ${queue.length}`;
@@ -75,7 +76,7 @@ $('fullscreen').onclick=async()=>{closeTools();try{if(document.fullscreenElement
 document.addEventListener('fullscreenchange',()=>{$('fullscreen').textContent=document.fullscreenElement?'Exit full screen':'Full screen'});
 $('explanation-panel').addEventListener('toggle',()=>{if($<HTMLDetailsElement>('explanation-panel').open)track('concept')});
 $('full-passage').onclick=()=>{const story=current().story;if(story){closeTools();$('passage-title').textContent=stories[story].title;$('passage-body').textContent=stories[story].text;$<HTMLDialogElement>('passage-dialog').showModal()}};
-$('source-photo').onclick=()=>{closeTools();const img=$<HTMLImageElement>('photo');$('photo-note').textContent='Printed source for reference. Handwritten answers may contain mistakes.';img.hidden=false;img.onerror=()=>{img.hidden=true;$('photo-note').textContent='This photo is unavailable here. Original page photos are in the repository download, but not included in the lightweight website package.'};img.src=`../${current().photo}`;$<HTMLDialogElement>('photo-dialog').showModal()};
+$('source-photo').onclick=()=>{closeTools();const img=$<HTMLImageElement>('photo');$('photo-note').textContent='Printed source for reference. Handwritten answers may contain mistakes.';img.hidden=false;img.onerror=()=>{img.hidden=true;$('photo-note').textContent='This photo is unavailable.'};img.src=current().photo;$<HTMLDialogElement>('photo-dialog').showModal()};
 document.querySelectorAll<HTMLButtonElement>('[data-close]').forEach(btn=>btn.onclick=()=>btn.closest('dialog')!.close());
 $('tools-reset').onclick=()=>{$('tools-reset-confirm').hidden=false;$('tools-reset-confirm').scrollIntoView({block:'nearest'})};$('tools-cancel-reset').onclick=()=>{$('tools-reset-confirm').hidden=true};$('tools-confirm-reset').onclick=()=>{resetProgress();closeTools()};
 document.addEventListener('keydown',e=>{if(document.querySelector('dialog[open]'))return;const target=e.target as HTMLElement;if(['INPUT','TEXTAREA','SELECT'].includes(target.tagName)||e.ctrlKey||e.altKey||e.metaKey)return;if(e.key.toLowerCase()==='t'){e.preventDefault();openTools()}else if(e.key==='ArrowRight'){e.preventDefault();next()}else if(e.key==='ArrowLeft'&&index>0){e.preventDefault();index--;render()}else if(e.key.toLowerCase()==='h'){e.preventDefault();hint()}else if(e.key===' '&&target.tagName!=='BUTTON'&&target.tagName!=='A'){e.preventDefault();reveal()}else if(/^[1-4]$/.test(e.key)){const answer=current().choices?.[Number(e.key)-1];if(answer){e.preventDefault();choose(answer)}}});

@@ -8,7 +8,7 @@ createServer(async (req, res) => {
   try {
     const pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
     const route = pathname === '/' ? '/app/index.html' : pathname;
-    const allowed = /^\/app\/(?:index\.html|app\.js|styles\.css|assets\/(?:illustrations|tutor)\/[\w-]+\.webp)$/.test(route)
+    const allowed = /^\/app\/(?:index\.html|app\.js|styles\.css|assets\/(?:illustrations|tutor|pages)\/[\w-]+\.webp)$/.test(route)
       || /^\/source-pages\/page-\d{2}\.jpeg$/.test(route);
     if (!allowed) { res.writeHead(404).end('Not found'); return; }
     const path = resolve(root, '.' + route);

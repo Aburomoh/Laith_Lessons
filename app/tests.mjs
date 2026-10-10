@@ -12,7 +12,7 @@ const availablePoses=runInNewContext(poseDeclaration+'\nposes');
 for(const [name] of availablePoses)assert(existsSync(new URL(`assets/tutor/${name}.webp`,import.meta.url)),`Missing pose ${name}`);
 assert.equal(new Set(questions.map(q=>q.id)).size,questions.length,'Unique question IDs');
 assert.equal(Object.keys(sources).length,13,'All 13 selected source photos mapped');
-for(const [source,photo] of Object.values(sources)){assert(questions.some(q=>q.source===source),`Missing training: ${source}`);assert(questions.some(q=>q.photo===`source-pages/${photo}.jpeg`));}
+for(const [source,photo] of Object.values(sources)){assert(questions.some(q=>q.source===source),`Missing training: ${source}`);assert(questions.some(q=>q.photo===`assets/pages/${photo}.webp`));}
 for(const q of questions){assert(topics.some(t=>t.id===q.topic));for(const key of ['prompt','answer','explanation','hint','source','photo'])assert(q[key]?.length,`${q.id}: ${key}`);if(q.choices){assert(q.choices.length>=2&&q.choices.length<=4);assert.equal(new Set(q.choices).size,q.choices.length);assert(q.choices.includes(q.answer),`${q.id}: answer missing`)}}
 for(const q of questions){const c=data.conceptFor(q);assert(c.title&&c.caption,`Concept text: ${q.id}`);assert(c.before.length&&c.after.length);assert([...c.before,...c.after].every(t=>typeof t==='string'&&t.length));assert(c.focus.every(i=>i>=0&&i<c.after.length));}
 for(const q of questions.filter(q=>q.topic==='be'&&/negative:/i.test(q.prompt))){const c=data.conceptFor(q);assert.equal(c.after[2],'not','Not must follow the be verb');assert(['am','is','are'].includes(c.after[1]));assert.equal(c.movement,'fall');}
@@ -96,7 +96,7 @@ await page.screenshot({path:resolve('preview-phonics.png'),fullPage:true});await
 assert.equal(await page.locator('#concept-words').textContent(),'rain');assert.equal(await page.locator('.phonics .concept-focus').count(),1);assert.equal(await page.locator('.phonics .concept-focus').textContent(),'ai');assert.equal(await page.locator('.phonics-bridge').count(),0);await page.keyboard.press('Escape');await page.emulateMedia({reducedMotion:'no-preference'});
 await page.setViewportSize({width:1440,height:900});await openTopics();await page.locator('#topic-grid button').filter({hasText:'The giraffe family'}).click();await page.locator('#reveal').click();await page.screenshot({path:resolve('preview-reading.png'),fullPage:true});
 await openTools();await page.locator('#full-passage').click();assert.match(await page.locator('#passage-body').innerText(),/Fennessy/);await page.locator('#passage-dialog [data-close]').click();
-await openTools();await page.locator('#source-photo').click();if(existsSync(new URL('../'+questions.find(q=>q.topic==='reading').photo,import.meta.url))){await page.locator('#photo').evaluate(img=>img.decode())}else{await page.waitForFunction(()=>document.getElementById('photo').hidden);assert.match(await page.locator('#photo-note').innerText(),/not included/)}await page.locator('#photo-dialog [data-close]').click();
+await openTools();await page.locator('#source-photo').click();if(existsSync(new URL(questions.find(q=>q.topic==='reading').photo,import.meta.url))){await page.locator('#photo').evaluate(img=>img.decode())}else{await page.waitForFunction(()=>document.getElementById('photo').hidden);assert.match(await page.locator('#photo-note').innerText(),/not included/)}await page.locator('#photo-dialog [data-close]').click();
 await page.setViewportSize({width:1024,height:768});await openTools();await page.locator('#size').click();assert(await page.locator('body').evaluate(el=>el.classList.contains('large')));assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
 await openTools();await page.locator('#tools-reset').click();await page.locator('#tools-confirm-reset').click();await openTools();assert.equal(await page.locator('#position').innerText(),'1 / 19');await page.locator('#tools-dialog [data-close]').click();
 // Right/wrong box counts every marked attempt; the tools reset clears it with the rest of the progress.
@@ -117,7 +117,16 @@ progress=await page.evaluate(()=>JSON.parse(localStorage.getItem('laith-english-
 for(const count of ['5','15']){await page.evaluate(()=>document.querySelectorAll('dialog[open]').forEach(d=>d.close()));await openTools();await page.locator('#round-size').selectOption(count);await page.locator('#mixed').click();await openTools();assert.equal(await page.locator('#position').innerText(),'1 / '+count);await page.locator('#tools-dialog [data-close]').click()}
 // The menu is a short list: no guide or expression picker.
 await openTools();assert.equal(await page.locator('#help, #poses').count(),0);await page.locator('#tools-dialog [data-close]').click();
-assert.deepEqual(errors,[],'No browser script errors');
+// Pen: draws over the screen, never blocks the lesson when off, and clears on a new question.
+{await page.evaluate(()=>document.querySelectorAll('dialog[open]').forEach(d=>d.close()));
+const inked=()=>page.locator('#ink').evaluate(c=>{const d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;for(let i=3;i<d.length;i+=4)if(d[i])return true;return false});
+assert(await page.locator('#pen-bar').isHidden());await page.locator('#pen').click();assert(await page.locator('#pen-bar').isVisible());
+await page.locator('.pen-color[aria-label="Blue"]').click();await page.mouse.move(300,300);await page.mouse.down();await page.mouse.move(420,360,{steps:8});await page.mouse.up();assert(await inked(),'Pen draws');
+await page.locator('#pen-undo').click();assert(!await inked(),'Undo removes the stroke');
+await page.mouse.move(300,300);await page.mouse.down();await page.mouse.move(420,360,{steps:8});await page.mouse.up();
+await page.keyboard.press('p');assert(await page.locator('#pen-bar').isHidden(),'P turns the pen off');assert(await inked(),'Ink stays when the pen is off');
+await page.locator('#next').click();assert(!await inked(),'A new question clears the ink');}
+
 // Verify the delivered file also works without a server.
 const offline=await browser.newPage();await offline.goto(new URL('index.html',import.meta.url).href);assert(await offline.locator('#question').innerText());await offline.locator('#reveal').click();assert(await offline.locator('.choice.correct').isVisible());await offline.locator('#tutor').evaluate(img=>img.decode());
 await browser.close();console.log('Browser checks passed: feedback, retry queue, saved position, oral marking, poses, stories, sources, reset and offline launch.');

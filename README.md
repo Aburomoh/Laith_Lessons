@@ -8,7 +8,7 @@ A quiet, offline English practice tool for an eight-year-old, designed for live 
 
 Use the website above, or download the repository and open `app/index.html` in your browser. On Windows, double-click `Open English Studio.cmd`.
 
-The teaching screen shows one question, answer choices, a tutor image and three controls: **back · answer · next**. A small **⋯** button opens a short menu: the right/wrong count, then Topics, Mixed practice, Hint, Explanation, Source photo, Lesson recap, Larger text, Full screen and Reset progress. Press **T** to open those tools from the keyboard.
+The teaching screen shows one question, answer choices, a tutor image and three controls: **back · answer · next**. A **pen** at the top left draws over the screen (red, blue or green, with undo and clear); press it again or **P** to stop. Ink clears on the next question. A small **⋯** button opens a short menu: the right/wrong count, then Topics, Mixed practice, Hint, Explanation, Source photo, Lesson recap, Larger text, Full screen and Reset progress. Press **T** to open those tools from the keyboard.
 
 Laith answers aloud. The tutor operates the screen. Responses stay hidden until a choice is selected or Answer is pressed. No account, internet connection or installation is required to teach.
 
@@ -29,11 +29,12 @@ The interface adapts to iPhone, iPad and Android screen sizes, with touch contro
 app/                 The app: open app/index.html
   assets/tutor/        17 tutor expressions (WebP, about 40 KB each)
   assets/illustrations/ 3 concept pictures
+  assets/pages/          13 page photos used by the questions (WebP, about 37 KB each)
 source-pages/        28 original page photos (page-01 … page-28), approved by the owner
 docs/                Teaching decisions, development guide, illustration notes
 .github/             Tests and website deployment
 ```
 
-The website leaves out the page photos; the app works without them. When opened from a download, ⋯ → Source photo shows the matching photo.
+⋯ → Source photo shows the worksheet page a question comes from, on the website and offline.
 
 See [the teaching and development guide](app/README.md) for keyboard shortcuts, source notes and build instructions.

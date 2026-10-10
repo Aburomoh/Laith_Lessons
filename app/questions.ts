@@ -36,7 +36,7 @@ It was fun, all the way.`}
 const questions: Question[] = [];
 function add(topic: TopicId, sourceKey: string, prompt: string, choices: string[] | undefined, answer: string, explanation: string, hint: string, extra=false, detail: Partial<Question> = {}) {
   const [source, suffix] = sources[sourceKey];
-  questions.push({id:`${topic}-${questions.filter(q=>q.topic===topic).length+1}`, topic, prompt, choices, answer, explanation, hint, source, photo:`source-pages/${suffix}.jpeg`, extra, ...detail});
+  questions.push({id:`${topic}-${questions.filter(q=>q.topic===topic).length+1}`, topic, prompt, choices, answer, explanation, hint, source, photo:`assets/pages/${suffix}.webp`, extra, ...detail});
 }
 function mc(topic: TopicId, source: string, prompt: string, choices: string[], answer: string, explanation: string, hint: string, extra=false, detail: Partial<Question>={}) {add(topic,source,prompt,choices,answer,explanation,hint,extra,detail)}
 function oral(topic: TopicId, source: string, prompt: string, answer: string, explanation: string, hint: string, extra=false, detail: Partial<Question>={}) {add(topic,source,prompt,undefined,answer,explanation,hint,extra,detail)}

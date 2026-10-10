@@ -2,7 +2,7 @@
 
 ## Open and teach
 
-Double-click **index.html** in this folder. It runs offline in a modern browser; no installation or account is needed. Keep this folder beside `source-pages`, which holds the 28 original page photos. They are optional for teaching and are left out of the website.
+Double-click **index.html** in this folder. It runs offline in a modern browser; no installation or account is needed. The 13 page photos the questions use are in `assets/pages` as small WebP copies; the full-size originals of all 28 pages are in `../source-pages`.
 
 You can also double-click **Open English Studio.cmd** in the parent folder to launch it in your default browser.
 
@@ -14,7 +14,7 @@ Open ⋯ → Lesson recap, or finish a round, to see correct responses, support,
 
 The tutor picture reacts automatically: amused, reassuring, serious or unsure while Laith thinks; the gentle crossed-X, concerned, empathetic or reassuring after a wrong answer; proud, excited or aha after a right one; caution for a hint.
 
-Keyboard: T opens the menu; 1–4 select choices; H gives a hint; Left/Right change question; Space reveals when focus is outside a button; Esc closes a panel. When a button has keyboard focus, Space activates that button normally.
+Keyboard: P turns the pen on or off (Esc also turns it off); T opens the menu; 1–4 select choices; H gives a hint; Left/Right change question; Space reveals when focus is outside a button; Esc closes a panel. When a button has keyboard focus, Space activates that button normally.
 
 The box at the top of the ⋯ menu shows how many answers Laith has got right and wrong since the last reset. Every marked attempt counts, including a second try at the same question and spoken answers marked ✓ or ↻; hints and reveals are not counted. **Reset progress** at the bottom of the menu clears this count, the review queue and the lesson recap after a confirmation.
 
