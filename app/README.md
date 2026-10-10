@@ -18,6 +18,8 @@ All available expressions are approved for Laith, who finds even the exaggerated
 
 Keyboard: T opens tutor tools; 1–4 select choices; H gives a hint; Left/Right change question; Space reveals when focus is outside a button; Esc closes a panel. When a button has keyboard focus, Space activates that button normally.
 
+The box at the top of Tutor tools shows how many answers Laith has got right and wrong since the last reset. Every marked attempt counts, including a second try at the same question and spoken answers marked ✓ or ↻; hints and reveals are not counted. **Reset progress** at the bottom of Tutor tools (or in Topics) clears this count, the review queue and the lesson recap after a confirmation.
+
 Progress and the current question are saved locally when browser storage is available. Local-file storage behaviour varies by browser; use the local server below for a stable browser origin. Progress stays in your browser. Storage belongs to the browser/device, so it is not synchronised through Teams.
 
 ## Content

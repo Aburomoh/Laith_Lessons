@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-10 — Score box and reset
+
+- Show how many answers Laith has got right and wrong in Tutor tools.
+- Add Reset progress, with confirmation, to Tutor tools; resetting also clears the count.
+
 ## 2026-10-10 — Repository tidy-up
 
 - Rename `learning-tool` to `app`; move tutor portraits to `app/assets/tutor` and illustrations to `app/assets/illustrations`.

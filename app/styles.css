@@ -21,3 +21,5 @@ html{-webkit-text-size-adjust:100%}button,summary,select{touch-action:manipulati
   #concept-dialog{padding:18px}#concept-words{min-height:140px;padding:38px 0 16px;gap:4px}.concept-word{font-size:25px;padding:4px}#concept-caption{font-size:20px}#concept-picture{height:160px}.illustrated .concept-word{font-size:24px}.illustrated #concept-caption{font-size:20px}#tools{top:max(8px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right))}
 }
 @media(max-height:500px) and (min-width:541px){main{padding:52px max(24px,env(safe-area-inset-right)) 18px max(24px,env(safe-area-inset-left))}.stage{padding:0 0 20px;gap:20px}h1,.reading-question h1{font-size:30px;margin-bottom:18px}.choice{font-size:26px;padding:12px;min-height:60px}#tutor{max-height:140px}dialog{max-height:90dvh}}
+
+.score-box{display:flex;gap:12px;margin:0 0 18px}.score-box div{flex:1;border-radius:14px;padding:10px 16px;font-size:18px}.score-box strong{font-size:30px;margin-right:6px}.score-right{background:#e6f0e8;color:#24573b}.score-wrong{background:#f6e6e1;color:#8a3b2a}

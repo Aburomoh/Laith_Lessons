@@ -92,3 +92,7 @@ The user asked for a cleaner repository with clearer file names. The app folder 
 | page-26.jpeg | WhatsApp Image 2026-10-10 at 12.10.12 AM (2).jpeg |
 | page-27.jpeg | WhatsApp Image 2026-10-10 at 12.10.12 AM (3).jpeg |
 | page-28.jpeg | WhatsApp Image 2026-10-10 at 12.10.13 AM.jpeg |
+
+## 2026-10-10 — Right/wrong count and reset in Tutor tools
+
+The user asked for a reset button and a box showing how many attempts Laith got right or wrong. The count sits at the top of Tutor tools, visible only to the tutor's menu, and counts every marked attempt, so a wrong first try followed by a correct second try shows one of each. Hints, concepts and reveals are support, not attempts, so they are not counted. The count persists in the browser with the other progress and resets with it. The existing reset in Topics was easy to miss, so Tutor tools gained its own, behind the same confirmation step.

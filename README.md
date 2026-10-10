@@ -8,7 +8,7 @@ A quiet, offline English practice tool for an eight-year-old, designed for live 
 
 Use the website above, or download the repository and open `app/index.html` in your browser. On Windows, double-click `Open English Studio.cmd`.
 
-The teaching screen shows one question, answer choices, a tutor image and three controls: **back · answer · next**. A small **⋯** button opens tutor tools: topics, hints, text size, expressions, source notes and progress. Press **T** to open those tools from the keyboard.
+The teaching screen shows one question, answer choices, a tutor image and three controls: **back · answer · next**. A small **⋯** button opens tutor tools: a right/wrong count, topics, hints, text size, expressions, source notes, progress and a reset button. Press **T** to open those tools from the keyboard.
 
 Laith answers aloud. The tutor operates the screen. Responses stay hidden until a choice is selected or Answer is pressed. No account, internet connection or installation is required to teach.
 
