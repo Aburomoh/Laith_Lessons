@@ -31,13 +31,14 @@
     <nav class="menu-list">
       <button id="topics">Topics</button>
       <div class="menu-row"><button id="mixed">Mixed practice</button><select id="round-size" aria-label="Questions in a mixed round"><option value="5">5</option><option value="10" selected>10</option><option value="15">15</option></select></div>
-      <button id="hint">Hint</button>
-      <details id="explanation-panel"><summary>Explanation</summary><p id="explanation"></p></details>
       <button id="source-photo">Source photo <small><span id="origin"></span> · <span id="source"></span></small></button>
       <button id="full-passage">Full story</button>
-      <button id="recap">Lesson recap</button>
-      <button id="size">Larger text</button>
-      <button id="fullscreen">Full screen</button>
+      <details id="more"><summary>More</summary><div class="menu-list">
+        <button id="hint">Hint</button>
+        <details id="explanation-panel"><summary>Explanation</summary><p id="explanation"></p></details>
+        <button id="size">Larger text</button>
+        <button id="fullscreen">Full screen</button>
+      </div></details>
       <button id="tools-reset" class="menu-danger">Reset progress</button>
       <div id="tools-reset-confirm" class="menu-row" hidden><button id="tools-confirm-reset">Clear progress</button><button id="tools-cancel-reset">Keep</button></div>
     </nav>

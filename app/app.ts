@@ -50,7 +50,7 @@ function choose(answer:string){if(revealed||selected===current().answer)return;s
 function reveal(){if(revealed)return;revealed=true;if(selected!==current().answer)track('revealed');if(saved.results[current().id]!=='correct')saved.results[current().id]='revealed';if(current().choices){$('feedback').hidden=true}else showFeedback(current().answer);pose('aha','Here’s how it works.');paintChoices();$<HTMLButtonElement>('reveal').disabled=true;$<HTMLButtonElement>('hint').disabled=true;persist();}
 // Every marked attempt counts, including second tries; hints and reveals do not.
 function tally(correct:boolean){if(correct)saved.tally.right++;else saved.tally.wrong++}
-function openTools(){$('score-right').textContent=String(saved.tally.right);$('score-wrong').textContent=String(saved.tally.wrong);$('tools-reset-confirm').hidden=true;$<HTMLDialogElement>('tools-dialog').showModal()}
+function openTools(){$('score-right').textContent=String(saved.tally.right);$('score-wrong').textContent=String(saved.tally.wrong);$('tools-reset-confirm').hidden=true;$<HTMLDetailsElement>('more').open=false;$<HTMLDialogElement>('tools-dialog').showModal()}
 function resetProgress(){saved.results={};saved.recall={};saved.lesson={};saved.tally={right:0,wrong:0};start('words')}
 function closeTools(){$<HTMLDialogElement>('tools-dialog').close()}
 function hint(){track('hint');closeTools();showFeedback(current().hint);pose('caution','Look at this clue.');}
@@ -69,7 +69,7 @@ function openRecap(){closeTools();const entries=Object.entries(saved.lesson);con
 function next(){if(index<queue.length-1){index++;render()}else{openRecap();}}
 $('topics').onclick=openTopics;$('tools').onclick=openTools;$('previous').onclick=()=>{if(index>0){index--;render()}};$('next').onclick=next;$('hint').onclick=hint;$('reveal').onclick=reveal;
 $('oral-correct').onclick=()=>oralMark(true);$('oral-retry').onclick=()=>oralMark(false);
-$('recap').onclick=openRecap;$('recap-topics').onclick=()=>{$<HTMLDialogElement>('recap-dialog').close();openTopics()};$('new-lesson').onclick=()=>{saved.lesson={};persist();$<HTMLDialogElement>('recap-dialog').close();openTopics()};
+$('recap-topics').onclick=()=>{$<HTMLDialogElement>('recap-dialog').close();openTopics()};$('new-lesson').onclick=()=>{saved.lesson={};persist();$<HTMLDialogElement>('recap-dialog').close();openTopics()};
 $('mixed').onclick=()=>{closeTools();start('mixed')};$('revisit').onclick=()=>start('revisit');
 $('size').onclick=()=>{saved.large=!saved.large;document.body.classList.toggle('large',saved.large);$('size').textContent=saved.large?'Normal text':'Larger text';closeTools();persist()};$('size').textContent=saved.large?'Normal text':'Larger text';
 $('fullscreen').onclick=async()=>{closeTools();try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch{showFeedback('Use your browser’s full-screen shortcut (usually F11).')}};

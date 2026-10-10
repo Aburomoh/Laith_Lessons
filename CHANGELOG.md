@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-10 — Two new readings and a tidier menu
+
+- Add The parrot family and A new home in Tokyo: two extra readings at the giraffe page's level, 15 questions each, with two new words per passage.
+- Group Hint, Explanation, Larger text and Full screen under More in the ⋯ menu.
+- Remove Lesson recap from the menu; the recap still appears at the end of each round.
+
 ## 2026-10-10 — Page photos online and a pen
 
 - Bring back Source photo on the website, using 600 px WebP copies of the 13 pages the questions use (about 37 KB each, 65% smaller than the originals).

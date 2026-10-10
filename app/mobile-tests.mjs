@@ -36,8 +36,8 @@ try {
         if(i<bank.length-1)await page.locator('#next').tap();
       }
       await page.locator('#tools').tap();await page.locator('#topics').tap();assert(await page.locator('#topic-dialog').evaluate(el=>el.scrollWidth<=el.clientWidth+1));await page.locator('#topic-dialog [data-close]').tap();await page.locator('#tools').tap();await page.locator('#round-size').selectOption('5');await page.locator('#mixed').tap();
-      await page.locator('#tools').tap();await page.locator('#size').tap();assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
-      await page.locator('#tools').tap();await page.locator('#recap').tap();await page.locator('#recap-dialog [data-close]').tap();
+      await page.locator('#tools').tap();await page.locator('#more summary').first().tap();await page.locator('#size').tap();assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+      await page.evaluate(()=>openRecap());await page.locator('#recap-dialog [data-close]').tap();
       await page.locator('#tools').tap();await page.locator('#source-photo').tap();await page.locator('#photo').evaluate(img=>img.decode());assert(await page.locator('#photo').isVisible(),`${name}: page photo`);await page.locator('#photo-dialog [data-close]').tap();
       await page.locator('#pen').tap();const bar=await page.locator('#pen-bar').boundingBox();assert(bar.x>=0&&bar.x+bar.width<=page.viewportSize().width,`${name}: pen bar fits`);await page.locator('#pen').tap();
       assert.deepEqual(errors,[],`${name}: scripts and deployed assets`);

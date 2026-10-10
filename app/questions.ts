@@ -1,5 +1,5 @@
-type TopicId = 'words' | 'world' | 'be' | 'origins' | 'reading' | 'possessives' | 'phonics' | 'capitals' | 'writing';
-type Question = { id: string; topic: TopicId; prompt: string; choices?: string[]; answer: string; explanation: string; hint: string; source: string; photo: string; extra: boolean; excerpt?: string; story?: 'giraffe' | 'jake'; pose?: string };
+type TopicId = 'words' | 'world' | 'be' | 'origins' | 'reading' | 'parrots' | 'tokyo' | 'possessives' | 'phonics' | 'capitals' | 'writing';
+type Question = { id: string; topic: TopicId; prompt: string; choices?: string[]; answer: string; explanation: string; hint: string; source: string; photo: string; extra: boolean; excerpt?: string; story?: 'giraffe' | 'jake' | 'parrots' | 'tokyo'; pose?: string; evidence?: string };
 type Topic = { id: TopicId; title: string; icon: string; subtitle: string };
 const topics: Topic[] = [
   {id:'words',title:'Words & meanings',icon:'Aa',subtitle:'Family words, actions and describing words'},
@@ -7,6 +7,8 @@ const topics: Topic[] = [
   {id:'be',title:'Am, is & are',icon:'?',subtitle:'Statements, negatives and short answers'},
   {id:'origins',title:'Where are you from?',icon:'↗',subtitle:'Ask and answer about places'},
   {id:'reading',title:'The giraffe family',icon:'▤',subtitle:'Read, find facts and explain words'},
+  {id:'parrots',title:'The parrot family',icon:'▤',subtitle:'New reading · Brazil, parrots and school'},
+  {id:'tokyo',title:'A new home in Tokyo',icon:'▤',subtitle:'New reading · city, school and family'},
   {id:'possessives',title:'My, your, his, her…',icon:'↔',subtitle:'Show who something belongs to'},
   {id:'phonics',title:'Long A sounds',icon:'ā',subtitle:'Read and spell a_e, ai and ay'},
   {id:'capitals',title:'Capital letters',icon:'A',subtitle:'Names, places and sentence beginnings'},
@@ -31,7 +33,23 @@ Giraffes are cool. They are tall and their colours are beautiful. I like their s
   jake: {title:'Jake the snail',text:`This is Jake. Jake is a snail. Jake likes to play. Jake has two friends, May and Ray.
 Jake plays with May and Ray. They see a pail beside the hay. They climb up and down the pail. Then comes the rain.
 Jake, May and Ray love the rain. They play all day in the rain.
-It was fun, all the way.`}
+It was fun, all the way.`},
+  // Extra readings modelled on the giraffe page: same structure, present simple and be, worksheet vocabulary,
+  // and exactly two new words each (count, feathers; garden, summer).
+  parrots: {title:'The parrot family', text:`Carlos and Ana Silva are parrot experts. They live in Brazil in South America with their son, Pedro and daughter, Sofia. They aren’t from Brazil. They are from Spain. They live there because of the parrots.
+
+Pedro (ten years old)
+We help our parents with the parrots. We count the parrots every Friday. We know many parrots because they all have different colours. The school bus arrives at 7:00 AM.
+
+Sofia (eight years old)
+Parrots are friendly. They are small and their feathers are green, red and blue. I like their long tails. Kiki is the name of my favourite parrot. I like living here, but we don’t see our grandparents and cousins in Spain very often.`},
+  tokyo: {title:'A new home in Tokyo', text:`Omar and Lina Haddad are English teachers. They live in Tokyo in Japan with their son, Sami and daughter, Huda. They aren’t from Japan. They are from Jordan. Their school is in Tokyo.
+
+Sami (eleven years old)
+I go to a big school in Tokyo. My classmates are friendly. We play football after school every Friday. Japanese is a difficult language, but I learn new words every day.
+
+Huda (seven years old)
+Tokyo is a beautiful city. Our house is small, but our garden is green. I like eating sushi with my dad. We travel to Jordan every summer because our grandparents and cousins live there.`}
 };
 const questions: Question[] = [];
 function add(topic: TopicId, sourceKey: string, prompt: string, choices: string[] | undefined, answer: string, explanation: string, hint: string, extra=false, detail: Partial<Question> = {}) {
@@ -150,6 +168,47 @@ readMC('What do they use to see which giraffes are there?',['Books','Photos','Ga
 readMC('What does Molly like about giraffes’ noses?',['They are soft.','They are short.'],'They are soft.','Molly says “I like their soft noses.”',molly,true);
 readMC('Do they see their grandparents very often?',['Yes, they do.','No, they don’t.'],'No, they don’t.','Molly says they don’t see their relatives very often.',relatives,true);
 oral('reading','reading','Read these sentences aloud.','Tutor checks clear words, a steady pace and pauses at full stops.','This is oral reading practice. There is no single written answer to choose.','Read slowly. Pause at each full stop.',true,{excerpt:'Giraffes are cool. They are tall and their colours are beautiful. I like their soft noses.',story:'giraffe',pose:'reassuring'});
+
+// New readings: the same question types as the giraffe page. Each answer points to one sentence of evidence.
+function readNew(topic:'parrots'|'tokyo',prompt:string,choices:string[],answer:string,explanation:string,excerpt:string,evidence:string,pose?:string){mc(topic,'reading',prompt,choices,answer,explanation,'Read the short passage above. Find the words that support your answer.',true,{excerpt,story:topic,evidence,pose})}
+const parrotFirst='Carlos and Ana Silva are parrot experts. They live in Brazil in South America with their son, Pedro and daughter, Sofia. They aren’t from Brazil. They are from Spain.';
+const pedro='Pedro (ten years old)\nWe help our parents with the parrots. We count the parrots every Friday. We know many parrots because they all have different colours.';
+const sofia='Sofia (eight years old)\nParrots are friendly. They are small and their feathers are green, red and blue. I like their long tails.';
+readNew('parrots','Who are Carlos and Ana?',['Parrot experts','Teachers','Children'],'Parrot experts','The first sentence says they are parrot experts.',parrotFirst,'Carlos and Ana Silva are parrot experts.');
+readNew('parrots','How old is Sofia?',['Ten','Eight','Nine'],'Eight','The heading says Sofia is eight years old.',sofia,'Sofia (eight years old)');
+readNew('parrots','True or false?\nThe Silva family is from Brazil.',['True','False'],'False','They live in Brazil, but they aren’t from Brazil. They are from Spain.',parrotFirst,'They aren’t from Brazil.');
+readNew('parrots','Where are Carlos and Ana from?',['Brazil','Spain','Japan'],'Spain','The passage says “They are from Spain.”',parrotFirst,'They are from Spain.');
+readNew('parrots','True or false?\nThey count the parrots every Friday.',['True','False'],'True','Pedro says “We count the parrots every Friday.”',pedro,'We count the parrots every Friday.');
+readNew('parrots','What does “count” mean?',['Find how many there are','Play a game'],'Find how many there are','When you count, you say 1, 2, 3… to find how many.',pedro,'We count the parrots every Friday.');
+readNew('parrots','Why do they know many parrots?',['They all have different colours.','They all have the same colours.'],'They all have different colours.','Different colours help them know which parrot is which.',pedro,'We know many parrots because they all have different colours.','shock');
+readNew('parrots','What does “They” refer to in “They are small”?',['The parents','The parrots','The feathers'],'The parrots','The sentence before it says “Parrots are friendly.” They refers to the parrots.',sofia,'They are small and their feathers are green, red and blue.');
+readNew('parrots','What are feathers?',['The soft parts that cover a bird','A bird’s home'],'The soft parts that cover a bird','Birds have feathers. Sofia says the feathers are green, red and blue.',sofia,'They are small and their feathers are green, red and blue.');
+readNew('parrots','Find the opposite of “short”.',['long','small','friendly'],'long','Long is the opposite of short. Sofia likes their long tails.',sofia,'I like their long tails.');
+readNew('parrots','Find the word that means “a female child”.',['son','daughter','parents'],'daughter','A daughter is a female child.',parrotFirst,'They live in Brazil in South America with their son, Pedro and daughter, Sofia.');
+readNew('parrots','Which word is a verb?',['count','parrots','Friday'],'count','Count is an action word: a verb.',pedro,'We count the parrots every Friday.');
+readNew('parrots','Which word is an adjective?',['friendly','Parrots','are'],'friendly','Friendly describes the parrots. It is an adjective.',sofia,'Parrots are friendly.');
+readNew('parrots','When does the school bus arrive?',['At 7:00 AM','At 9:00 AM'],'At 7:00 AM','Pedro says “The school bus arrives at 7:00 AM.”','The school bus arrives at 7:00 AM.','The school bus arrives at 7:00 AM.');
+oral('parrots','reading','Read these sentences aloud.','Tutor checks clear words, a steady pace and pauses at full stops.','This is oral reading practice. There is no single written answer to choose.','Read slowly. Pause at each full stop.',true,{excerpt:'Parrots are friendly. They are small and their feathers are green, red and blue. I like their long tails.',story:'parrots',pose:'reassuring',evidence:'Parrots are friendly. They are small.'});
+
+const tokyoFirst='Omar and Lina Haddad are English teachers. They live in Tokyo in Japan with their son, Sami and daughter, Huda. They aren’t from Japan. They are from Jordan.';
+const sami='Sami (eleven years old)\nI go to a big school in Tokyo. My classmates are friendly. We play football after school every Friday. Japanese is a difficult language, but I learn new words every day.';
+const huda='Huda (seven years old)\nTokyo is a beautiful city. Our house is small, but our garden is green. I like eating sushi with my dad.';
+const summer='We travel to Jordan every summer because our grandparents and cousins live there.';
+readNew('tokyo','Who are Omar and Lina?',['English teachers','Parrot experts','Children'],'English teachers','The first sentence says they are English teachers.',tokyoFirst,'Omar and Lina Haddad are English teachers.');
+readNew('tokyo','How old is Sami?',['Seven','Eleven','Twelve'],'Eleven','The heading says Sami is eleven years old.',sami,'Sami (eleven years old)');
+readNew('tokyo','True or false?\nThe Haddad family is from Japan.',['True','False'],'False','They live in Japan, but they aren’t from Japan. They are from Jordan.',tokyoFirst,'They aren’t from Japan.');
+readNew('tokyo','Where is the Haddad family from?',['Japan','Jordan','Spain'],'Jordan','The passage says “They are from Jordan.”',tokyoFirst,'They are from Jordan.');
+readNew('tokyo','True or false?\nSami’s classmates are friendly.',['True','False'],'True','Sami says “My classmates are friendly.”',sami,'My classmates are friendly.');
+readNew('tokyo','When do they play football?',['Every Friday','Every Sunday'],'Every Friday','Sami says “We play football after school every Friday.”',sami,'We play football after school every Friday.');
+readNew('tokyo','Is Japanese an easy language for Sami?',['Yes, it is.','No, it isn’t.'],'No, it isn’t.','Sami says Japanese is a difficult language. Difficult means not easy.',sami,'Japanese is a difficult language, but I learn new words every day.');
+readNew('tokyo','Find the opposite of “easy”.',['difficult','friendly','new'],'difficult','Difficult means not easy.',sami,'Japanese is a difficult language, but I learn new words every day.');
+readNew('tokyo','What is a garden?',['Land next to a house with grass and plants','A room in a school'],'Land next to a house with grass and plants','A garden is next to a house. Huda says their garden is green.',huda,'Our house is small, but our garden is green.');
+readNew('tokyo','What is summer?',['The hot time of the year','A big city'],'The hot time of the year','Summer is the hot time of the year, when school is closed.',summer,'We travel to Jordan every summer because our grandparents and cousins live there.');
+readNew('tokyo','What does “there” refer to in “our grandparents and cousins live there”?',['Tokyo','Jordan','The garden'],'Jordan','There means Jordan, the place in the same sentence.',summer,'We travel to Jordan every summer because our grandparents and cousins live there.');
+readNew('tokyo','Which word is a noun?',['garden','green','small'],'garden','Garden names a place. It is a noun.',huda,'Our house is small, but our garden is green.');
+readNew('tokyo','Which word is a verb?',['travel','summer','Jordan'],'travel','Travel is an action word: a verb.',summer,'We travel to Jordan every summer because our grandparents and cousins live there.');
+readNew('tokyo','Which word is an adjective?',['beautiful','Tokyo','city'],'beautiful','Beautiful describes the city. It is an adjective.',huda,'Tokyo is a beautiful city.');
+oral('tokyo','reading','Read these sentences aloud.','Tutor checks clear words, a steady pace and pauses at full stops.','This is oral reading practice. There is no single written answer to choose.','Read slowly. Pause at each full stop.',true,{excerpt:'Tokyo is a beautiful city. Our house is small, but our garden is green. I like eating sushi with my dad.',story:'tokyo',pose:'reassuring',evidence:'Tokyo is a beautiful city.'});
 
 for (const [pronoun,answer,choices] of [
   ['I','my',['my','his','our']],['you','your',['her','your','their']],['he','his',['his','her','my']],['she','her',['their','his','her']],['it','its',['it’s','its','their']],['we','our',['your','our','my']],['they','their',['our','her','their']]

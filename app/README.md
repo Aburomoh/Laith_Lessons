@@ -8,9 +8,9 @@ You can also double-click **Open English Studio.cmd** in the parent folder to la
 
 For Teams, share the browser window, open ⋯ → Full screen and use Larger text if Laith needs larger text. The default layout is designed for a landscape screen. If enlarged text needs more space on a smaller display, scroll or reduce the text size.
 
-Laith answers aloud. The tutor selects his choice. The screen has back, Answer and next controls only. Open ⋯ for the menu: Topics (choose a lesson or Practise again), Mixed practice (a shuffled round of 5, 10 or 15 questions), Hint, Explanation, Source photo, Lesson recap, Larger text, Full screen and Reset progress. On spoken and writing questions the menu also shows ✓ Correct and ↻ Try again. Next never advances automatically. Missed, hinted, explained and revealed questions remain in review after immediate correction. They clear only after an unaided correct response at least 24 hours after their last recorded practice. This is a practical schedule, not a mastery score.
+Laith answers aloud. The tutor selects his choice. The screen has back, Answer and next controls only. Open ⋯ for the menu: Topics (choose a lesson or Practise again), Mixed practice (a shuffled round of 5, 10 or 15 questions), Source photo, Full story on reading questions, More (Hint, Explanation, Larger text, Full screen) and Reset progress. On spoken and writing questions the menu also shows ✓ Correct and ↻ Try again. Next never advances automatically. Missed, hinted, explained and revealed questions remain in review after immediate correction. They clear only after an unaided correct response at least 24 hours after their last recorded practice. This is a practical schedule, not a mastery score.
 
-Open ⋯ → Lesson recap, or finish a round, to see correct responses, support, misses, reveals and successful delayed recall. Counts may overlap. Start new lesson recap clears only the recap; it never clears the review queue or bypasses the delay. The recap otherwise persists across reloads.
+Finish a round to see correct responses, support, misses, reveals and successful delayed recall. Counts may overlap. Start new lesson recap clears only the recap; it never clears the review queue or bypasses the delay. The recap otherwise persists across reloads.
 
 The tutor picture reacts automatically: amused, reassuring, serious or unsure while Laith thinks; the gentle crossed-X, concerned, empathetic or reassuring after a wrong answer; proud, excited or aha after a right one; caution for a hint.
 
@@ -24,13 +24,17 @@ Progress and the current question are saved locally when browser storage is avai
 
 The question bank follows the **13 photos explicitly selected for the next exam**, not the entire book. Every question has source details in the ⋯ menu. Worksheet practice adapts the page into a one-question spoken activity; it is not always a verbatim transcription. Extra practice is labelled separately.
 
-Topics: vocabulary; countries and continents; am/is/are; origins and Where questions; The giraffe family comprehension and oral reading; possessive adjectives; long A phonics and the Jake story; capitalisation; three sentences about one's country.
+Topics: vocabulary; countries and continents; am/is/are; origins and Where questions; The giraffe family comprehension and oral reading; two extra readings, The parrot family and A new home in Tokyo; possessive adjectives; long A phonics and the Jake story; capitalisation; three sentences about one's country.
 
 The vocabulary continuation's page number is not visible, so the interface does not assign one. The selected classbook phonics photo remains labelled Classbook p. 15. Revision p. 10 is outside the selected scope. The continent exercise follows the worksheet's Australia label and explains the classbook's Oceania label. Country pictures are treated as worksheet clues rather than exclusive facts about those countries.
 
 The ambiguous Friday sound question is explicitly reframed as an **ay spelling** question. Its explanation in the ⋯ menu explains that tail, plane and holiday all have long A. No original listening recordings are included. Open writing uses model answers, with clear instructions to accept other suitable answers and personalise facts rather than assume Laith's country.
 
 The **ⓘ** beside the question opens a short concept animation. Replay repeats it; Escape or × closes it. Relevant family, giraffe and travel/arrival concepts include one simple illustration. Some concepts use clearly labelled teaching examples. Opening it before answering records support and schedules later review, without recording an answer or advancing the question. Teaching explanations are collapsed in tutor tools; opening one also records support. With reduced motion enabled on the device, the final state appears immediately. Image prompts and provenance are recorded in ../docs/ILLUSTRATIONS.md.
+
+## Extra readings
+
+The parrot family and A new home in Tokyo are extra practice written to match the giraffe page: the same layout (parents, then two children speaking with their ages), present simple with am/is/are, aren’t/don’t, I like + -ing and because, and the same question types (who, how old, true/false, find a verb, noun, adjective or pronoun, opposites and word meanings). They reuse worksheet vocabulary (family words, countries, Friday, friendly, difficult, arrive, travel, school bus, Tokyo, sushi, parrot, football) and each adds exactly two new words: count and feathers; garden and summer. Beyond names, the only other words not in the worksheets are very basic: colours, small, big, every, eight and eating.
 
 ## Source and development
 

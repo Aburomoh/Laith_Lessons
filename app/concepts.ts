@@ -56,6 +56,16 @@ function conceptFor(q:Question):Concept {
     return concept('Capital letters',initial,after,after.flatMap((t,i)=>t!==initial[i]?[i]:[]),'Check the start, names, places, I, days and months.');
   }
   if(q.topic==='origins')return concept('Where asks about a place',['Where','is','she','from?'],['She','is','from','Italy.'],[3],'Where? → A place. This is an example.','fall');
+  if((q.topic==='parrots'||q.topic==='tokyo')&&q.evidence){
+    // New readings highlight the evidence sentence, or the target word inside it.
+    const words=splitWords(q.evidence);
+    if(/Read these sentences/.test(q.prompt))return concept('Read with pauses',words,words,words.map((w,i)=>/\.$/.test(w)?i:-1).filter(i=>i>=0),'Pause at each full stop.','fade');
+    const target=(/refer to/.test(q.prompt)?q.prompt.match(/“(\w+)”/)?.[1]:q.answer)!.toLowerCase();
+    const at=words.findIndex(w=>w.replace(/[^A-Za-z’']/g,'').toLowerCase()===target);
+    const title=/refer to/.test(q.prompt)?'A pronoun replaces a noun':/verb/.test(q.prompt)?'An action word':/noun/.test(q.prompt)?'A naming word':/adjective|opposite/.test(q.prompt)?'A describing word':'Find the evidence';
+    if(at>=0&&title!=='Find the evidence')return concept(title,words,words,[at],q.explanation,'fade');
+    return concept('Find the evidence',words,words,words.map((_,i)=>i),'Read the passage. Find words that support your answer.','fade');
+  }
   if(q.topic==='reading'){
     if(/pronoun|refer to/.test(q.prompt))return concept('A pronoun replaces a noun',['Giraffes','are','tall.'],['They','are','tall.'],[0],'They refers to the giraffes.');
     if(/verb/.test(q.prompt))return concept('An action word',['We','help','our','parents.'],['We','help','our','parents.'],[1],'Help is an action word: a verb.','fade');
