@@ -13,12 +13,12 @@ const topics: Topic[] = [
   {id:'writing',title:'Tell me about your country',icon:'✎',subtitle:'Build three simple sentences'}
 ];
 const sources: Record<string, [string,string]> = {
-  words:['Revision p. 2 · Vocabulary','12.10.07 AM (2)'], actions:['Revision vocabulary continuation · Page number not visible','12.10.12 AM (1)'],
-  world:['Revision p. 4 · Continents and countries','12.10.08 AM (3)'], clues:['Revision p. 5 · Country clues and vocabulary','12.10.11 AM (1)'],
-  be:['Revision p. 6 · The verb to be','12.10.12 AM'], origins:['Revision p. 7 · Where? / Origins','12.10.07 AM'],
-  reading:['Revision p. 8 · Reading comprehension','12.10.07 AM (3)'], possessives:['Revision p. 9 · Possessive adjectives','12.10.10 AM (3)'],
-  longA:['Revision p. 11 · Long A','12.10.09 AM (1)'], phonics:['Revision p. 12 · Phonics and Jake story','12.10.08 AM (2)'],
-  bookPhonics:['Classbook p. 15 · Long A phonics','12.10.06 AM'], capitals:['Revision p. 13 · Capitalisation','12.10.09 AM (3)'], writing:['Revision p. 14 · Three facts about your country','12.10.12 AM (3)']
+  words:['Revision p. 2 · Vocabulary','page-06'], actions:['Revision vocabulary continuation · Page number not visible','page-25'],
+  world:['Revision p. 4 · Continents and countries','page-11'], clues:['Revision p. 5 · Country clues and vocabulary','page-21'],
+  be:['Revision p. 6 · The verb to be','page-24'], origins:['Revision p. 7 · Where? / Origins','page-04'],
+  reading:['Revision p. 8 · Reading comprehension','page-07'], possessives:['Revision p. 9 · Possessive adjectives','page-19'],
+  longA:['Revision p. 11 · Long A','page-13'], phonics:['Revision p. 12 · Phonics and Jake story','page-10'],
+  bookPhonics:['Classbook p. 15 · Long A phonics','page-01'], capitals:['Revision p. 13 · Capitalisation','page-15'], writing:['Revision p. 14 · Three facts about your country','page-27']
 };
 const stories = {
   giraffe: {title:'The giraffe family', text:`Julian and Stephanie Fennessy are giraffe experts. They live in Namibia in Africa with their son, Luca and daughter, Molly. They aren’t from Namibia. They live there because of the giraffes.
@@ -36,7 +36,7 @@ It was fun, all the way.`}
 const questions: Question[] = [];
 function add(topic: TopicId, sourceKey: string, prompt: string, choices: string[] | undefined, answer: string, explanation: string, hint: string, extra=false, detail: Partial<Question> = {}) {
   const [source, suffix] = sources[sourceKey];
-  questions.push({id:`${topic}-${questions.filter(q=>q.topic===topic).length+1}`, topic, prompt, choices, answer, explanation, hint, source, photo:`WhatsApp Image 2026-10-10 at ${suffix}.jpeg`, extra, ...detail});
+  questions.push({id:`${topic}-${questions.filter(q=>q.topic===topic).length+1}`, topic, prompt, choices, answer, explanation, hint, source, photo:`source-pages/${suffix}.jpeg`, extra, ...detail});
 }
 function mc(topic: TopicId, source: string, prompt: string, choices: string[], answer: string, explanation: string, hint: string, extra=false, detail: Partial<Question>={}) {add(topic,source,prompt,choices,answer,explanation,hint,extra,detail)}
 function oral(topic: TopicId, source: string, prompt: string, answer: string, explanation: string, hint: string, extra=false, detail: Partial<Question>={}) {add(topic,source,prompt,undefined,answer,explanation,hint,extra,detail)}

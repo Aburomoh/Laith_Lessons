@@ -1,9 +1,15 @@
 # Changelog
 
-## Unreleased — Concept explanations, delayed retrieval and CI
+## 2026-10-10 — Repository tidy-up
 
-- Include all 28 original page photos in the GitHub-ready source files with explicit owner approval.
+- Rename `learning-tool` to `app`; move tutor portraits to `app/assets/tutor` and illustrations to `app/assets/illustrations`.
+- Move the 28 page photos to `source-pages` as `page-01.jpeg` … `page-28.jpeg`.
+- Remove one-off upload helpers and the branch-mode website redirect.
+- Publish the website through GitHub Pages.
 
+## Concept explanations, delayed retrieval and CI
+
+- Include all 28 original page photos with explicit owner approval.
 - Prepare a runtime-only GitHub Pages package and deployment gated by CI.
 - Adapt phone/tablet layouts with safe-area spacing, touch targets and scrollable dialogs.
 - Add packaged-site tests for iPhone/iPad WebKit and Android Chromium emulation.

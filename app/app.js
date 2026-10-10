@@ -13,12 +13,12 @@ const topics          = [
   {id:'writing',title:'Tell me about your country',icon:'✎',subtitle:'Build three simple sentences'}
 ];
 const sources                                  = {
-  words:['Revision p. 2 · Vocabulary','12.10.07 AM (2)'], actions:['Revision vocabulary continuation · Page number not visible','12.10.12 AM (1)'],
-  world:['Revision p. 4 · Continents and countries','12.10.08 AM (3)'], clues:['Revision p. 5 · Country clues and vocabulary','12.10.11 AM (1)'],
-  be:['Revision p. 6 · The verb to be','12.10.12 AM'], origins:['Revision p. 7 · Where? / Origins','12.10.07 AM'],
-  reading:['Revision p. 8 · Reading comprehension','12.10.07 AM (3)'], possessives:['Revision p. 9 · Possessive adjectives','12.10.10 AM (3)'],
-  longA:['Revision p. 11 · Long A','12.10.09 AM (1)'], phonics:['Revision p. 12 · Phonics and Jake story','12.10.08 AM (2)'],
-  bookPhonics:['Classbook p. 15 · Long A phonics','12.10.06 AM'], capitals:['Revision p. 13 · Capitalisation','12.10.09 AM (3)'], writing:['Revision p. 14 · Three facts about your country','12.10.12 AM (3)']
+  words:['Revision p. 2 · Vocabulary','page-06'], actions:['Revision vocabulary continuation · Page number not visible','page-25'],
+  world:['Revision p. 4 · Continents and countries','page-11'], clues:['Revision p. 5 · Country clues and vocabulary','page-21'],
+  be:['Revision p. 6 · The verb to be','page-24'], origins:['Revision p. 7 · Where? / Origins','page-04'],
+  reading:['Revision p. 8 · Reading comprehension','page-07'], possessives:['Revision p. 9 · Possessive adjectives','page-19'],
+  longA:['Revision p. 11 · Long A','page-13'], phonics:['Revision p. 12 · Phonics and Jake story','page-10'],
+  bookPhonics:['Classbook p. 15 · Long A phonics','page-01'], capitals:['Revision p. 13 · Capitalisation','page-15'], writing:['Revision p. 14 · Three facts about your country','page-27']
 };
 const stories = {
   giraffe: {title:'The giraffe family', text:`Julian and Stephanie Fennessy are giraffe experts. They live in Namibia in Africa with their son, Luca and daughter, Molly. They aren’t from Namibia. They live there because of the giraffes.
@@ -36,7 +36,7 @@ It was fun, all the way.`}
 const questions             = [];
 function add(topic         , sourceKey        , prompt        , choices                      , answer        , explanation        , hint        , extra=false, detail                    = {}) {
   const [source, suffix] = sources[sourceKey];
-  questions.push({id:`${topic}-${questions.filter(q=>q.topic===topic).length+1}`, topic, prompt, choices, answer, explanation, hint, source, photo:`WhatsApp Image 2026-10-10 at ${suffix}.jpeg`, extra, ...detail});
+  questions.push({id:`${topic}-${questions.filter(q=>q.topic===topic).length+1}`, topic, prompt, choices, answer, explanation, hint, source, photo:`source-pages/${suffix}.jpeg`, extra, ...detail});
 }
 function mc(topic         , source        , prompt        , choices          , answer        , explanation        , hint        , extra=false, detail                   ={}) {add(topic,source,prompt,choices,answer,explanation,hint,extra,detail)}
 function oral(topic         , source        , prompt        , answer        , explanation        , hint        , extra=false, detail                   ={}) {add(topic,source,prompt,undefined,answer,explanation,hint,extra,detail)}
@@ -209,9 +209,9 @@ oral('writing','writing','Say three sentences about your country without the sen
 
 const splitWords=(text       )=>text.trim().split(/\s+/);
 const illustrations = {
-  family: {src:'assets/family.png',alt:'Two grandparents, two parents, a son and a daughter standing together.'},
-  giraffes: {src:'assets/giraffes.png',alt:'Two giraffes with long necks and different spot patterns.'},
-  arrival: {src:'assets/arrival.png',alt:'A bus has arrived at school. A child steps out onto the pavement.'}
+  family: {src:'assets/illustrations/family.png',alt:'Two grandparents, two parents, a son and a daughter standing together.'},
+  giraffes: {src:'assets/illustrations/giraffes.png',alt:'Two giraffes with long necks and different spot patterns.'},
+  arrival: {src:'assets/illustrations/arrival.png',alt:'A bus has arrived at school. A child steps out onto the pavement.'}
 };
 function illustrationFor(q         )                                         {
   if(q.topic==='words'){
@@ -330,7 +330,7 @@ let revealed=false, selected                 , attempt=0, feedbackVisible=false;
 const poses                    = [['raised_eyebrows','Raised eyebrows'],['x_arms-softened','Wrong answer · gentle'],['x_arms','Wrong answer · firm'],['skeptical','Skeptical'],['confused','Confused'],['unsure','Unsure'],['concerned','Concerned'],['disappointed','Disappointed'],['frustrated','Frustrated'],['empathetic','Empathetic'],['reassuring','Reassuring'],['serious','Serious'],['caution','Caution'],['shock','Surprised'],['aha','Aha!'],['proud','Proud'],['excited','Excited'],['amused','Amused']];
 document.body.classList.toggle('large',saved.large);
 function persist(){saved.ids=queue.map(q=>q.id);saved.index=index;try{localStorage.setItem(storageKey,JSON.stringify(saved));}catch{storageAvailable=false}}
-function pose(name       ,message       ){const img=$                  ('tutor');img.src=`../tutor poses/tutor_${name}.png`;img.alt=`Tutor: ${poses.find(p=>p[0]===name)?.[1]||name}`;img.dataset.message=message;}
+function pose(name       ,message       ){const img=$                  ('tutor');img.src=`assets/tutor/${name}.png`;img.alt=`Tutor: ${poses.find(p=>p[0]===name)?.[1]||name}`;img.dataset.message=message;}
 function current(){return queue[index]}
 function showFeedback(text       ,tone='info'){feedbackVisible=true;$('feedback').hidden=false;$('feedback').textContent=text;$('feedback').dataset.tone=tone;}
 function render(){
@@ -377,13 +377,13 @@ $('explanation-panel').addEventListener('toggle',()=>{if($                    ('
 $('help').onclick=()=>{closeTools();$                   ('help-dialog').showModal()};
 $('full-passage').onclick=()=>{const story=current().story;if(story){closeTools();$('passage-title').textContent=stories[story].title;$('passage-body').textContent=stories[story].text;$                   ('passage-dialog').showModal()}};
 $('source-photo').onclick=()=>{closeTools();const img=$                  ('photo');$('photo-note').textContent='Printed source for reference. Handwritten answers may contain mistakes.';img.hidden=false;img.onerror=()=>{img.hidden=true;$('photo-note').textContent='This photo is unavailable here. Original page photos are in the repository download, but not included in the lightweight website package.'};img.src=`../${current().photo}`;$                   ('photo-dialog').showModal()};
-for(const [name,label] of poses){const btn=document.createElement('button');const img=document.createElement('img');img.src=`../tutor poses/tutor_${name}.png`;img.alt='';img.loading='lazy';const text=document.createElement('span');text.textContent=label;btn.append(img,text);btn.onclick=()=>{const messages                      ={frustrated:'This problem feels tricky. Let’s break it down.',disappointed:'That attempt didn’t work. Let’s try another way.',confused:'Something doesn’t fit. Let’s check.',skeptical:'Does that answer fit the sentence?',shock:'Oh! Let’s look closely.',x_arms:'That answer doesn’t fit. Try again.','x_arms-softened':'Not quite. Let’s try again.',reassuring:'Take your time. We’ll work it out.',empathetic:'It’s okay to need another try.',proud:'You’re making progress!',excited:'A great discovery!',amused:'Let’s have some fun with this!',aha:'Now it makes sense!',caution:'Watch out for this detail.',serious:'Let’s focus on the rule.',concerned:'Let’s check where we got stuck.',unsure:'Let’s check the evidence together.'};pose(name,messages[name]||'What do you think?');$                   ('pose-dialog').close()};$('pose-grid').append(btn)}
+for(const [name,label] of poses){const btn=document.createElement('button');const img=document.createElement('img');img.src=`assets/tutor/${name}.png`;img.alt='';img.loading='lazy';const text=document.createElement('span');text.textContent=label;btn.append(img,text);btn.onclick=()=>{const messages                      ={frustrated:'This problem feels tricky. Let’s break it down.',disappointed:'That attempt didn’t work. Let’s try another way.',confused:'Something doesn’t fit. Let’s check.',skeptical:'Does that answer fit the sentence?',shock:'Oh! Let’s look closely.',x_arms:'That answer doesn’t fit. Try again.','x_arms-softened':'Not quite. Let’s try again.',reassuring:'Take your time. We’ll work it out.',empathetic:'It’s okay to need another try.',proud:'You’re making progress!',excited:'A great discovery!',amused:'Let’s have some fun with this!',aha:'Now it makes sense!',caution:'Watch out for this detail.',serious:'Let’s focus on the rule.',concerned:'Let’s check where we got stuck.',unsure:'Let’s check the evidence together.'};pose(name,messages[name]||'What do you think?');$                   ('pose-dialog').close()};$('pose-grid').append(btn)}
 $('poses').onclick=()=>{closeTools();$                   ('pose-dialog').showModal()};
 document.querySelectorAll                   ('[data-close]').forEach(btn=>btn.onclick=()=>btn.closest('dialog') .close());
 $('reset').onclick=()=>{$('reset-confirm').hidden=false};$('cancel-reset').onclick=()=>{$('reset-confirm').hidden=true};$('confirm-reset').onclick=()=>{saved.results={};saved.recall={};saved.lesson={};start('words')};
 document.addEventListener('keydown',e=>{if(document.querySelector('dialog[open]'))return;const target=e.target               ;if(['INPUT','TEXTAREA','SELECT'].includes(target.tagName)||e.ctrlKey||e.altKey||e.metaKey)return;if(e.key.toLowerCase()==='t'){e.preventDefault();$                   ('tools-dialog').showModal()}else if(e.key==='ArrowRight'){e.preventDefault();next()}else if(e.key==='ArrowLeft'&&index>0){e.preventDefault();index--;render()}else if(e.key.toLowerCase()==='h'){e.preventDefault();hint()}else if(e.key===' '&&target.tagName!=='BUTTON'&&target.tagName!=='A'){e.preventDefault();reveal()}else if(/^[1-4]$/.test(e.key)){const answer=current().choices?.[Number(e.key)-1];if(answer){e.preventDefault();choose(answer)}}});
 // Warm the frequently used feedback images so screen-share feedback appears promptly.
-for(const name of ['x_arms-softened','aha','proud','concerned','reassuring','empathetic','excited']){const img=new Image();img.src=`../tutor poses/tutor_${name}.png`}
+for(const name of ['x_arms-softened','aha','proud','concerned','reassuring','empathetic','excited']){const img=new Image();img.src=`assets/tutor/${name}.png`}
 render();
 
 let conceptTimer                                        ;

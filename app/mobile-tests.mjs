@@ -21,7 +21,7 @@ try {
     try {
       const page=await browser.newPage({...devices[device],reducedMotion:'reduce'});
       const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`)});
-      await page.goto(url);await page.waitForURL('**/learning-tool/index.html');await page.locator('#tutor').evaluate(img=>img.decode());
+      await page.goto(url);await page.waitForURL('**/app/index.html');await page.locator('#tutor').evaluate(img=>img.decode());
       const bank=all?questions:questions.filter((q,i)=>i===questions.findIndex(other=>other.topic===q.topic));
       await page.evaluate(ids=>{const state=JSON.parse(localStorage.getItem('laith-english-studio-v1'));state.ids=ids;state.index=0;localStorage.setItem('laith-english-studio-v1',JSON.stringify(state))},bank.map(q=>q.id));await page.reload();
       for(let i=0;i<bank.length;i++){

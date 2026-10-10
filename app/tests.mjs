@@ -9,10 +9,10 @@ const {questions,topics,sources}=data;
 const appSource=stripTypeScriptTypes(readFileSync(new URL('app.ts',import.meta.url),'utf8'));
 const poseDeclaration=appSource.match(/const poses[^=]*=([^;]+);/s)[0];
 const availablePoses=runInNewContext(poseDeclaration+'\nposes');
-for(const [name] of availablePoses)assert(existsSync(new URL(`../tutor poses/tutor_${name}.png`,import.meta.url)),`Missing pose ${name}`);
+for(const [name] of availablePoses)assert(existsSync(new URL(`assets/tutor/${name}.png`,import.meta.url)),`Missing pose ${name}`);
 assert.equal(new Set(questions.map(q=>q.id)).size,questions.length,'Unique question IDs');
 assert.equal(Object.keys(sources).length,13,'All 13 selected source photos mapped');
-for(const [source,photo] of Object.values(sources)){assert(questions.some(q=>q.source===source),`Missing training: ${source}`);assert(questions.some(q=>q.photo===`WhatsApp Image 2026-10-10 at ${photo}.jpeg`));}
+for(const [source,photo] of Object.values(sources)){assert(questions.some(q=>q.source===source),`Missing training: ${source}`);assert(questions.some(q=>q.photo===`source-pages/${photo}.jpeg`));}
 for(const q of questions){assert(topics.some(t=>t.id===q.topic));for(const key of ['prompt','answer','explanation','hint','source','photo'])assert(q[key]?.length,`${q.id}: ${key}`);if(q.choices){assert(q.choices.length>=2&&q.choices.length<=4);assert.equal(new Set(q.choices).size,q.choices.length);assert(q.choices.includes(q.answer),`${q.id}: answer missing`)}}
 for(const q of questions){const c=data.conceptFor(q);assert(c.title&&c.caption,`Concept text: ${q.id}`);assert(c.before.length&&c.after.length);assert([...c.before,...c.after].every(t=>typeof t==='string'&&t.length));assert(c.focus.every(i=>i>=0&&i<c.after.length));}
 for(const q of questions.filter(q=>q.topic==='be'&&/negative:/i.test(q.prompt))){const c=data.conceptFor(q);assert.equal(c.after[2],'not','Not must follow the be verb');assert(['am','is','are'].includes(c.after[1]));assert.equal(c.movement,'fall');}

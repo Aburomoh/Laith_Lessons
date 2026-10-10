@@ -57,3 +57,38 @@ Validation: strict TypeScript/content checks and the desktop suite passed. The p
 ## 2026-10-10 — All original page photographs approved
 
 The user explicitly approved including all 28 original page photographs in the commit, in addition to the 18 tutor portraits and 3 concept illustrations. Root JPEG exceptions and the GitHub export now include those 28 files. Keep their names and locations for the source viewer. The discarded tutor_curious portrait remains excluded. This supersedes the earlier repository-photo exclusion; the lightweight Pages artifact still omits source photographs. Prepared files remain available for the user to commit and push themselves.
+
+## 2026-10-10 — Repository tidy-up and clear file names
+
+The user asked for a cleaner repository with clearer file names. The app folder is now `app`, its pictures sit under `app/assets`, and the page photos are numbered in the order WhatsApp saved them. Question sources keep their printed page labels; only the file names changed. The website went live through GitHub Pages with GitHub Actions as the source, so the branch-mode redirect and the one-off upload guide and export script were removed.
+
+| New name | Original name |
+|---|---|
+| page-01.jpeg | WhatsApp Image 2026-10-10 at 12.10.06 AM.jpeg |
+| page-02.jpeg | WhatsApp Image 2026-10-10 at 12.10.06 AM (1).jpeg |
+| page-03.jpeg | WhatsApp Image 2026-10-10 at 12.10.06 AM (2).jpeg |
+| page-04.jpeg | WhatsApp Image 2026-10-10 at 12.10.07 AM.jpeg |
+| page-05.jpeg | WhatsApp Image 2026-10-10 at 12.10.07 AM (1).jpeg |
+| page-06.jpeg | WhatsApp Image 2026-10-10 at 12.10.07 AM (2).jpeg |
+| page-07.jpeg | WhatsApp Image 2026-10-10 at 12.10.07 AM (3).jpeg |
+| page-08.jpeg | WhatsApp Image 2026-10-10 at 12.10.08 AM.jpeg |
+| page-09.jpeg | WhatsApp Image 2026-10-10 at 12.10.08 AM (1).jpeg |
+| page-10.jpeg | WhatsApp Image 2026-10-10 at 12.10.08 AM (2).jpeg |
+| page-11.jpeg | WhatsApp Image 2026-10-10 at 12.10.08 AM (3).jpeg |
+| page-12.jpeg | WhatsApp Image 2026-10-10 at 12.10.09 AM.jpeg |
+| page-13.jpeg | WhatsApp Image 2026-10-10 at 12.10.09 AM (1).jpeg |
+| page-14.jpeg | WhatsApp Image 2026-10-10 at 12.10.09 AM (2).jpeg |
+| page-15.jpeg | WhatsApp Image 2026-10-10 at 12.10.09 AM (3).jpeg |
+| page-16.jpeg | WhatsApp Image 2026-10-10 at 12.10.10 AM.jpeg |
+| page-17.jpeg | WhatsApp Image 2026-10-10 at 12.10.10 AM (1).jpeg |
+| page-18.jpeg | WhatsApp Image 2026-10-10 at 12.10.10 AM (2).jpeg |
+| page-19.jpeg | WhatsApp Image 2026-10-10 at 12.10.10 AM (3).jpeg |
+| page-20.jpeg | WhatsApp Image 2026-10-10 at 12.10.11 AM.jpeg |
+| page-21.jpeg | WhatsApp Image 2026-10-10 at 12.10.11 AM (1).jpeg |
+| page-22.jpeg | WhatsApp Image 2026-10-10 at 12.10.11 AM (2).jpeg |
+| page-23.jpeg | WhatsApp Image 2026-10-10 at 12.10.11 AM (3).jpeg |
+| page-24.jpeg | WhatsApp Image 2026-10-10 at 12.10.12 AM.jpeg |
+| page-25.jpeg | WhatsApp Image 2026-10-10 at 12.10.12 AM (1).jpeg |
+| page-26.jpeg | WhatsApp Image 2026-10-10 at 12.10.12 AM (2).jpeg |
+| page-27.jpeg | WhatsApp Image 2026-10-10 at 12.10.12 AM (3).jpeg |
+| page-28.jpeg | WhatsApp Image 2026-10-10 at 12.10.13 AM.jpeg |

@@ -1,9 +1,9 @@
 type Concept = { title:string; before:string[]; after:string[]; focus:number[]; caption:string; movement:'fall'|'move'|'fade'; phonics?:'a_e'|'ai'|'ay' };
 const splitWords=(text:string)=>text.trim().split(/\s+/);
 const illustrations = {
-  family: {src:'assets/family.png',alt:'Two grandparents, two parents, a son and a daughter standing together.'},
-  giraffes: {src:'assets/giraffes.png',alt:'Two giraffes with long necks and different spot patterns.'},
-  arrival: {src:'assets/arrival.png',alt:'A bus has arrived at school. A child steps out onto the pavement.'}
+  family: {src:'assets/illustrations/family.png',alt:'Two grandparents, two parents, a son and a daughter standing together.'},
+  giraffes: {src:'assets/illustrations/giraffes.png',alt:'Two giraffes with long necks and different spot patterns.'},
+  arrival: {src:'assets/illustrations/arrival.png',alt:'A bus has arrived at school. A child steps out onto the pavement.'}
 };
 function illustrationFor(q:Question): keyof typeof illustrations | undefined {
   if(q.topic==='words'){
