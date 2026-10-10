@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-10 — Gentle crossed-X more often
+
+- Show the gentle crossed-X on alternate questions for a second wrong pick and for a spoken answer marked Try again, as well as on every first wrong pick.
+
 ## 2026-10-10 — Faster pictures
 
 - Convert tutor pictures and illustrations to web-sized WebP: 37 MB down to under 1 MB.
