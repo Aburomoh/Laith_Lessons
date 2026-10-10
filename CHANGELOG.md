@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-10 — Simpler menu
+
+- Turn the ⋯ menu into a short vertical list with plain labels.
+- Give Mixed practice its own menu item (with round size), separate from Topics.
+- Remove the Guide, the Tutor expression picker, the coaching tips and the duplicate reset in Topics.
+
 ## 2026-10-10 — Clearer controls
 
 - Disable Answer once the right choice is picked (spoken and writing questions keep it, so the example answer can still be shown).

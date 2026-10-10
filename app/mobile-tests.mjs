@@ -35,7 +35,7 @@ try {
         if(i===0)await page.screenshot({path:`preview-${name}.png`,fullPage:true});
         if(i<bank.length-1)await page.locator('#next').tap();
       }
-      await page.locator('#tools').tap();await page.locator('#topics').tap();assert(await page.locator('#topic-dialog').evaluate(el=>el.scrollWidth<=el.clientWidth+1));await page.locator('#round-size').selectOption('5');await page.locator('#mixed').tap();
+      await page.locator('#tools').tap();await page.locator('#topics').tap();assert(await page.locator('#topic-dialog').evaluate(el=>el.scrollWidth<=el.clientWidth+1));await page.locator('#topic-dialog [data-close]').tap();await page.locator('#tools').tap();await page.locator('#round-size').selectOption('5');await page.locator('#mixed').tap();
       await page.locator('#tools').tap();await page.locator('#size').tap();assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
       await page.locator('#tools').tap();await page.locator('#recap').tap();await page.locator('#recap-dialog [data-close]').tap();
       assert.deepEqual(errors,[],`${name}: scripts and deployed assets`);

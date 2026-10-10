@@ -53,8 +53,7 @@ await page.locator('#next').click();await page.locator('#reveal').click();await 
 await openTopics();await page.locator('#revisit').click();await openTools();assert.equal(await page.locator('#position').innerText(),'1 / 2');await page.locator('#tools-dialog [data-close]').click();
 await page.locator('#reveal').click();await page.locator('#next').click();await page.locator('#next').click();assert(await page.locator('#recap-dialog').isVisible());await page.locator('#recap-topics').click();
 await page.locator('#topic-grid button').filter({hasText:'Tell me about your country'}).click();await openTools();await page.locator('#oral-retry').click();await openTools();await page.locator('#oral-correct').click();await page.locator('#reveal').click();assert.match(await page.locator('#feedback').innerText(),/Example: I live in Jordan/);
-await openTools();await page.locator('#poses').click();await page.locator('#pose-grid button').filter({hasText:'Frustrated'}).click();assert.match(await page.locator('#tutor').getAttribute('data-message'),/break it down/);
-await openTopics();await page.locator('#mixed').click();await openTools();assert.equal(await page.locator('#position').innerText(),'1 / 10');await page.locator('#tools-dialog [data-close]').click();
+await openTools();await page.locator('#mixed').click();await openTools();assert.equal(await page.locator('#position').innerText(),'1 / 10');await page.locator('#tools-dialog [data-close]').click();
 // Full-bank fixture retains exhaustive layout coverage independently of short rounds.
 await page.evaluate(ids=>{const state=JSON.parse(localStorage.getItem('laith-english-studio-v1'));state.ids=ids;state.index=0;localStorage.setItem('laith-english-studio-v1',JSON.stringify(state))},questions.map(q=>q.id));await page.reload();
 assert.equal(await page.locator('.controls button:visible').count(),3,'Only three main controls');
@@ -99,7 +98,7 @@ await page.setViewportSize({width:1440,height:900});await openTopics();await pag
 await openTools();await page.locator('#full-passage').click();assert.match(await page.locator('#passage-body').innerText(),/Fennessy/);await page.locator('#passage-dialog [data-close]').click();
 await openTools();await page.locator('#source-photo').click();if(existsSync(new URL('../'+questions.find(q=>q.topic==='reading').photo,import.meta.url))){await page.locator('#photo').evaluate(img=>img.decode())}else{await page.waitForFunction(()=>document.getElementById('photo').hidden);assert.match(await page.locator('#photo-note').innerText(),/not included/)}await page.locator('#photo-dialog [data-close]').click();
 await page.setViewportSize({width:1024,height:768});await openTools();await page.locator('#size').click();assert(await page.locator('body').evaluate(el=>el.classList.contains('large')));assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
-await openTopics();await page.locator('#reset').click();await page.locator('#confirm-reset').click();await openTools();assert.equal(await page.locator('#position').innerText(),'1 / 19');await page.locator('#tools-dialog [data-close]').click();
+await openTools();await page.locator('#tools-reset').click();await page.locator('#tools-confirm-reset').click();await openTools();assert.equal(await page.locator('#position').innerText(),'1 / 19');await page.locator('#tools-dialog [data-close]').click();
 // Right/wrong box counts every marked attempt; the tools reset clears it with the rest of the progress.
 const score=async()=>[await page.locator('#score-right').innerText(),await page.locator('#score-wrong').innerText()];
 await openTools();assert.deepEqual(await score(),['0','0']);await page.locator('#tools-dialog [data-close]').click();
@@ -115,7 +114,9 @@ await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('laith-english-
 progress=await page.evaluate(()=>JSON.parse(localStorage.getItem('laith-english-studio-v1')));assert.equal(progress.recall['words-1'].outcome,'remembered');assert(!progress.recall['words-1'].pending);
 await page.locator('#next').click();await page.locator('#reveal').click();await openTools();await page.locator('#recap').click();assert.match(await page.locator('#recap-summary').innerText(),/1 remembered later/);await page.locator('#new-lesson').click();
 progress=await page.evaluate(()=>JSON.parse(localStorage.getItem('laith-english-studio-v1')));assert.deepEqual(progress.lesson,{});assert(progress.recall['words-2'].pending);
-for(const count of ['5','15']){await page.locator('#round-size').selectOption(count);await page.locator('#mixed').click();await openTools();assert.equal(await page.locator('#position').innerText(),'1 / '+count);await page.locator('#topics').click()}
+for(const count of ['5','15']){await page.evaluate(()=>document.querySelectorAll('dialog[open]').forEach(d=>d.close()));await openTools();await page.locator('#round-size').selectOption(count);await page.locator('#mixed').click();await openTools();assert.equal(await page.locator('#position').innerText(),'1 / '+count);await page.locator('#tools-dialog [data-close]').click()}
+// The menu is a short list: no guide or expression picker.
+await openTools();assert.equal(await page.locator('#help, #poses').count(),0);await page.locator('#tools-dialog [data-close]').click();
 assert.deepEqual(errors,[],'No browser script errors');
 // Verify the delivered file also works without a server.
 const offline=await browser.newPage();await offline.goto(new URL('index.html',import.meta.url).href);assert(await offline.locator('#question').innerText());await offline.locator('#reveal').click();assert(await offline.locator('.choice.correct').isVisible());await offline.locator('#tutor').evaluate(img=>img.decode());

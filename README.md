@@ -8,7 +8,7 @@ A quiet, offline English practice tool for an eight-year-old, designed for live 
 
 Use the website above, or download the repository and open `app/index.html` in your browser. On Windows, double-click `Open English Studio.cmd`.
 
-The teaching screen shows one question, answer choices, a tutor image and three controls: **back · answer · next**. A small **⋯** button opens tutor tools: a right/wrong count, topics, hints, text size, expressions, source notes, progress and a reset button. Press **T** to open those tools from the keyboard.
+The teaching screen shows one question, answer choices, a tutor image and three controls: **back · answer · next**. A small **⋯** button opens a short menu: the right/wrong count, then Topics, Mixed practice, Hint, Explanation, Source photo, Lesson recap, Larger text, Full screen and Reset progress. Press **T** to open those tools from the keyboard.
 
 Laith answers aloud. The tutor operates the screen. Responses stay hidden until a choice is selected or Answer is pressed. No account, internet connection or installation is required to teach.
 
@@ -19,7 +19,7 @@ The interface adapts to iPhone, iPad and Android screen sizes, with touch contro
 ## Included
 
 - 152 questions across nine topics, grounded in the 13 selected exam pages.
-- Clearly distinguished source-based and extra practice in tutor tools.
+- Clearly distinguished source-based and extra practice in the ⋯ menu.
 - Short feedback, expressive tutor poses, mixed practice and a revisit queue.
 - Local browser progress and TypeScript/CSS source.
 
@@ -34,6 +34,6 @@ docs/                Teaching decisions, development guide, illustration notes
 .github/             Tests and website deployment
 ```
 
-The website leaves out the page photos; the app works without them. When opened from a download, Tutor tools → Source shows the matching photo.
+The website leaves out the page photos; the app works without them. When opened from a download, ⋯ → Source photo shows the matching photo.
 
 See [the teaching and development guide](app/README.md) for keyboard shortcuts, source notes and build instructions.
